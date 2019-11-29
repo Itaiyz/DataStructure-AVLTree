@@ -161,7 +161,7 @@ public class AVLTree {
 	 * precondition: none postcondition: none
 	 */
 	public IAVLNode getRoot() {
-		return null;
+		return this.root;
 	}
 
 	/**
