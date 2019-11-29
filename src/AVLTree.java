@@ -150,7 +150,7 @@ public class AVLTree {
 	 * precondition: none postcondition: none
 	 */
 	public int size() {
-		return 42; // to be replaced by student code
+		return this.size;
 	}
 
 	/**
