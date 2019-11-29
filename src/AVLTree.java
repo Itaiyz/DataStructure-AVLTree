@@ -35,9 +35,45 @@ public class AVLTree {
 	 *
 	 * returns the info of an item with key k if it exists in the tree
 	 * otherwise, returns null
+	 * 
+	 * uses private method searchNode(int k)
 	 */
 	public String search(int k) {
-		return "42"; // to be replaced by student code
+		if (this.empty()) {
+			return null;
+		}
+		IAVLNode node = this.searchNode(k);
+		if (node == null) {
+			return null;
+		}
+		return node.getValue();
+	}
+
+	/**
+	 * private IAVLNode searchNode(int k)
+	 * 
+	 * Internal method implementing search algorithm seen in class in BST
+	 * presentation on slide 16.
+	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
+	 * 
+	 * @param {int} k - key of node we're searching for.
+	 * @return {IAVLNode} the desired node, with key == k , or null if no such
+	 *         node exists in the tree
+	 */
+	private IAVLNode searchNode(int k) {
+		IAVLNode x = this.root;
+		while (x != null) {
+			if (k == x.getKey()) {
+				return x;
+			} else {
+				if (k < x.getKey()) {
+					x = x.getLeft();
+				} else {
+					x = x.getRight();
+				}
+			}
+		}
+		return x; // If we get here, we should return null
 	}
 
 	/**
