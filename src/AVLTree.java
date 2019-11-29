@@ -190,6 +190,8 @@ public class AVLTree {
 		private int height;
 
 		/**
+		 * public AVLNode(int key, String value)
+		 * 
 		 * Constructor for real node, with all relevant information passed as
 		 * arguments
 		 */
@@ -204,6 +206,8 @@ public class AVLTree {
 		}
 
 		/**
+		 * public AVLNode()
+		 * 
 		 * Constructor for virtual node, doesn't require any additional
 		 * information
 		 */
