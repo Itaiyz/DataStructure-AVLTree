@@ -8,6 +8,18 @@
 
 public class AVLTree {
 
+	private IAVLNode root;
+	private int size;
+
+	public AVLTree(IAVLNode root) {
+		this.root = root;
+		if (root == null) {
+			this.size = 0;
+		} else {
+			this.size = 1;
+		}
+	}
+
 	/**
 	 * public boolean empty()
 	 *
