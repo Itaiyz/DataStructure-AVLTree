@@ -27,7 +27,7 @@ public class AVLTree {
 	 *
 	 */
 	public boolean empty() {
-		return false; // to be replaced by student code
+		return this.size == 0;
 	}
 
 	/**
