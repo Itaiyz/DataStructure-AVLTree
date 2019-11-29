@@ -10,14 +10,34 @@ public class AVLTree {
 
 	private IAVLNode root;
 	private int size;
+	private AVLTree left;
+	private AVLTree right;
 
 	public AVLTree(IAVLNode root) {
 		this.root = root;
-		if (root == null) {
+		this.left = null;
+		this.right = null;
+		if (root == null || root.isRealNode() == false) { // The || operator
+															// will
+															// short-circuit
+															// when root is null
+															// and so we won't
+															// get a
+															// nullPointerException
+															// from the second
+															// condition
 			this.size = 0;
 		} else {
 			this.size = 1;
 		}
+	}
+
+	public AVLTree getLeft() {
+		return this.left;
+	}
+
+	public AVLTree getRight() {
+		return this.right;
 	}
 
 	/**
