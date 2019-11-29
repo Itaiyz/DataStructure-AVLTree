@@ -180,6 +180,43 @@ public class AVLTree {
 	 * must be modified. (It must implement IAVLNode)
 	 */
 	public class AVLNode implements IAVLNode {
+
+		private int key;
+		private String value;
+		private IAVLNode left;
+		private IAVLNode right;
+		private IAVLNode parent;
+		private boolean realNode;
+		private int height;
+
+		/**
+		 * Constructor for real node, with all relevant information passed as
+		 * arguments
+		 */
+		public AVLNode(int key, String value) {
+			this.key = key;
+			this.value = value;
+			this.left = null;
+			this.right = null;
+			this.parent = null;
+			this.realNode = true;
+			this.height = 0;
+		}
+
+		/**
+		 * Constructor for virtual node, doesn't require any additional
+		 * information
+		 */
+		public AVLNode() {
+			this.key = -1;
+			this.value = null;
+			this.left = null;
+			this.right = null;
+			this.parent = null;
+			this.realNode = false;
+			this.height = -1;
+		}
+
 		public int getKey() {
 			return 42; // to be replaced by student code
 		}
