@@ -169,8 +169,12 @@ public class AVLTree {
 	 * array if the tree is empty.
 	 */
 	public int[] keysToArray() {
-		int[] arr = new int[42]; // to be replaced by student code
-		return arr; // to be replaced by student code
+		IAVLNode[] nodeArr = this.nodesToArray();
+		int[] arr = new int[nodeArr.length];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = nodeArr[i].getKey();
+		}
+		return arr;
 	}
 
 	/**
@@ -180,8 +184,12 @@ public class AVLTree {
 	 * respective keys, or an empty array if the tree is empty.
 	 */
 	public String[] infoToArray() {
-		String[] arr = new String[42]; // to be replaced by student code
-		return arr; // to be replaced by student code
+		IAVLNode[] nodeArr = this.nodesToArray();
+		String[] arr = new String[nodeArr.length];
+		for (int i = 0; i < arr.length; i++) {
+			arr[i] = nodeArr[i].getValue();
+		}
+		return arr;
 	}
 
 	/**
