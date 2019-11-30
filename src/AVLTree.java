@@ -73,16 +73,18 @@ public class AVLTree {
 	 * private IAVLNode searchNode(int k)
 	 * 
 	 * Internal method implementing search algorithm seen in class in BST
-	 * presentation on slide 16.
+	 * presentation on slide 17.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
 	 * 
 	 * @param {int} k - key of node we're searching for.
-	 * @return {IAVLNode} the desired node, with key == k , or null if no such
-	 *         node exists in the tree
+	 * @return {IAVLNode} the desired node, with key == k , or the correct
+	 *         insertion point for it if no such node exists in the tree
 	 */
 	private IAVLNode searchNode(int k) {
 		IAVLNode x = this.root;
+		IAVLNode y = x;
 		while (x != null) {
+			y = x;
 			if (k == x.getKey()) {
 				return x;
 			} else {
@@ -93,7 +95,8 @@ public class AVLTree {
 				}
 			}
 		}
-		return x; // If we get here, we should return null
+		return y; // If we get here, we should return the insertion point for a
+					// node with key k
 	}
 
 	/**
