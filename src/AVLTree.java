@@ -10,26 +10,15 @@ public class AVLTree {
 
 	private IAVLNode root;
 	private int size;
-	private AVLTree left;
-	private AVLTree right;
+
 
 	public AVLTree(IAVLNode root) {
 		this.root = root;
-		this.left = null;
-		this.right = null;
 		if (root.isRealNode()) {
 			size = 1;
 		} else {
 			size = 0;
 		}
-	}
-
-	public AVLTree getLeft() {
-		return this.left;
-	}
-
-	public AVLTree getRight() {
-		return this.right;
 	}
 
 	/**
