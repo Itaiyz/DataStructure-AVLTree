@@ -17,18 +17,10 @@ public class AVLTree {
 		this.root = root;
 		this.left = null;
 		this.right = null;
-		if (root == null || root.isRealNode() == false) { // The || operator
-															// will
-															// short-circuit
-															// when root is null
-															// and so we won't
-															// get a
-															// nullPointerException
-															// from the second
-															// condition
-			this.size = 0;
+		if (root.isRealNode()) {
+			size = 1;
 		} else {
-			this.size = 1;
+			size = 0;
 		}
 	}
 
@@ -83,7 +75,7 @@ public class AVLTree {
 	private IAVLNode searchNode(int k) {
 		IAVLNode x = this.root;
 		IAVLNode y = x;
-		while (x != null) {
+		while (x.isRealNode()) {
 			y = x;
 			if (k == x.getKey()) {
 				return x;
@@ -135,7 +127,7 @@ public class AVLTree {
 		}
 		IAVLNode x = this.root;
 		IAVLNode y = x;
-		while (x != null && x.isRealNode() == true) {
+		while (x.isRealNode()) {
 			y = x;
 			x = x.getLeft();
 		}
@@ -154,13 +146,12 @@ public class AVLTree {
 		}
 		IAVLNode x = this.root;
 		IAVLNode y = x;
-		while (x != null && x.isRealNode() == true) {
+		while (x.isRealNode()) {
 			y = x;
 			x = x.getRight();
 		}
 		return y.getValue();
 	}
-	
 
 	/**
 	 * public int[] keysToArray()
