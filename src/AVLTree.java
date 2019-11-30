@@ -160,7 +160,7 @@ public class AVLTree {
 		}
 		return y.getValue();
 	}
-	}
+	
 
 	/**
 	 * public int[] keysToArray()
