@@ -39,7 +39,7 @@ public class AVLTree {
 	 *
 	 */
 	public boolean empty() {
-		return this.size == 0;
+		return size == 0;
 	}
 
 	/**
@@ -51,10 +51,10 @@ public class AVLTree {
 	 * uses private method searchNode(int k)
 	 */
 	public String search(int k) {
-		if (this.empty()) {
+		if (empty()) {
 			return null;
 		}
-		IAVLNode node = this.searchNode(k);
+		IAVLNode node = searchNode(k);
 		if (node.getKey() != k) {
 			return null;
 		}
@@ -73,7 +73,7 @@ public class AVLTree {
 	 *         insertion point for it if no such node exists in the tree
 	 */
 	private IAVLNode searchNode(int k) {
-		IAVLNode x = this.root;
+		IAVLNode x = root;
 		IAVLNode y = x;
 		while (x.isRealNode()) {
 			y = x;
@@ -122,10 +122,10 @@ public class AVLTree {
 	 * if the tree is empty
 	 */
 	public String min() {
-		if (this.empty()) {
+		if (empty()) {
 			return null;
 		}
-		IAVLNode x = this.root;
+		IAVLNode x = root;
 		IAVLNode y = x;
 		while (x.isRealNode()) {
 			y = x;
@@ -141,10 +141,10 @@ public class AVLTree {
 	 * the tree is empty
 	 */
 	public String max() {
-		if (this.empty()) {
+		if (empty()) {
 			return null;
 		}
-		IAVLNode x = this.root;
+		IAVLNode x = root;
 		IAVLNode y = x;
 		while (x.isRealNode()) {
 			y = x;
@@ -160,7 +160,7 @@ public class AVLTree {
 	 * array if the tree is empty.
 	 */
 	public int[] keysToArray() {
-		IAVLNode[] nodeArr = this.nodesToArray();
+		IAVLNode[] nodeArr = nodesToArray();
 		int[] arr = new int[nodeArr.length];
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = nodeArr[i].getKey();
@@ -175,7 +175,7 @@ public class AVLTree {
 	 * respective keys, or an empty array if the tree is empty.
 	 */
 	public String[] infoToArray() {
-		IAVLNode[] nodeArr = this.nodesToArray();
+		IAVLNode[] nodeArr = nodesToArray();
 		String[] arr = new String[nodeArr.length];
 		for (int i = 0; i < arr.length; i++) {
 			arr[i] = nodeArr[i].getValue();
@@ -191,7 +191,7 @@ public class AVLTree {
 	 * precondition: none postcondition: none
 	 */
 	public int size() {
-		return this.size;
+		return size;
 	}
 
 	/**
@@ -287,11 +287,11 @@ public class AVLTree {
 		public AVLNode(int key, String value) {
 			this.key = key;
 			this.value = value;
-			this.left = null;
-			this.right = null;
-			this.parent = null;
-			this.realNode = true;
-			this.height = 0;
+			left = null;
+			right = null;
+			parent = null;
+			realNode = true;
+			height = 0;
 		}
 
 		/**
@@ -301,50 +301,50 @@ public class AVLTree {
 		 * information
 		 */
 		public AVLNode() {
-			this.key = -1;
-			this.value = null;
-			this.left = null;
-			this.right = null;
-			this.parent = null;
-			this.realNode = false;
-			this.height = -1;
+			key = -1;
+			value = null;
+			left = null;
+			right = null;
+			parent = null;
+			realNode = false;
+			height = -1;
 		}
 
 		public int getKey() {
-			return this.key; // Works for both real and virtual nodes
+			return key; // Works for both real and virtual nodes
 		}
 
 		public String getValue() {
-			return this.value; // Works for both real and virtual nodes
+			return value; // Works for both real and virtual nodes
 		}
 
 		public void setLeft(IAVLNode node) {
-			this.left = node;
+			left = node;
 		}
 
 		public IAVLNode getLeft() {
-			return this.left;
+			return left;
 		}
 
 		public void setRight(IAVLNode node) {
-			this.right = node;
+			right = node;
 		}
 
 		public IAVLNode getRight() {
-			return this.right;
+			return right;
 		}
 
 		public void setParent(IAVLNode node) {
-			this.parent = node;
+			parent = node;
 		}
 
 		public IAVLNode getParent() {
-			return this.parent;
+			return parent;
 		}
 
 		// Returns True if this is a non-virtual AVL node
 		public boolean isRealNode() {
-			return this.realNode;
+			return realNode;
 		}
 
 		public void setHeight(int height) {
@@ -352,7 +352,7 @@ public class AVLTree {
 		}
 
 		public int getHeight() {
-			return this.height;
+			return height;
 		}
 	}
 
