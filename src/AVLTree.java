@@ -63,7 +63,7 @@ public class AVLTree {
 			return null;
 		}
 		IAVLNode node = this.searchNode(k);
-		if (node == null) {
+		if (node.getKey() != k) {
 			return null;
 		}
 		return node.getValue();
