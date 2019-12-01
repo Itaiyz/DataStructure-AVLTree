@@ -11,7 +11,6 @@ public class AVLTree {
 	private IAVLNode root;
 	private int size;
 
-
 	public AVLTree(IAVLNode root) {
 		this.root = root;
 		if (root.isRealNode()) {
@@ -78,6 +77,28 @@ public class AVLTree {
 		}
 		return y; // If we get here, we should return the insertion point for a
 					// node with key k
+	}
+
+	/**
+	 * Performs right rotation. Precondition: child.getParent()==parent.
+	 * 
+	 * Based on diagram seen in class in BST presentation on slide 31.
+	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
+	 */
+	private void rotateRight(IAVLNode child, IAVLNode parent) {
+		if (root == parent) { // Ensure AVLTree's pointers are correct
+			root = child;
+		} else { // Ensure parent of parent's pointers are correct
+			IAVLNode grandparent = parent.getParent();
+			if (grandparent.getLeft() == parent) {
+				grandparent.setLeft(child);
+			} else {
+				grandparent.setRight(child);
+			}
+		}
+		IAVLNode A = child.getLeft();
+		IAVLNode B = child.getRight();
+		IAVLNode C= parent.getRight()
 	}
 
 	/**
@@ -191,7 +212,7 @@ public class AVLTree {
 	 * precondition: none postcondition: none
 	 */
 	public IAVLNode getRoot() {
-		if(empty()) {
+		if (empty()) {
 			return null;
 		}
 		return root;
