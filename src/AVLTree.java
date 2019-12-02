@@ -141,7 +141,25 @@ public class AVLTree {
 	 * if an item with key k already exists in the tree.
 	 */
 	public int insert(int k, String i) {
-		return 42; // to be replaced by student code
+		IAVLNode insertionPoint = searchNode(k);
+		if (insertionPoint.getKey() == k) {
+			return -1;
+		}
+
+		// Insert the node
+		IAVLNode newNode = new AVLNode(k, i);
+		if (insertionPoint.getKey() > k) {
+			insertionPoint.setLeft(newNode);
+		} else {
+			insertionPoint.setRight(newNode);
+		}
+		
+		int rebalanceCount = 0;
+		// Fix heights and sizes
+
+		// Rebalance, fixing heights and sizes as we go
+
+		return rebalanceCount;
 	}
 
 	/**
