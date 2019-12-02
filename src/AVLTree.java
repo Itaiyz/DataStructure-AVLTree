@@ -161,26 +161,61 @@ public class AVLTree {
 		}
 
 		int rebalanceCount = 0;
-		// Fix heights and sizes
+
 		// Waiting for clarification at
 		// https://moodle.tau.ac.il/mod/forum/discuss.php?d=19338 on how to
-		// count promotions/demotions inside a rotation
+		// count promotions/demotions inside a rotation. Currently also counting
+		// internal promotions/demotions that appear inside rotations
+		// Implementing cases appearing in WAVL presentation on slide 22
+		// https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/WAVL.pptx
+		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
 		while (x != null) {
+			// Case 1 (rank differences are 0,1 and so their sum is 1)
+			if (2 * x.getHeight() - x.getLeft().getHeight()
+					- x.getRight().getHeight() == 1) {
 
-			x.setHeight(1 + Math.max(x.getLeft().getHeight(),
-					x.getRight().getHeight()));
-			// This last part is incorrect, we don't want to change all the
-			// ranks all the way, only until rank problem is fixed
+				x.setHeight(x.getHeight() + 1);
+				rebalanceCount += 1;
+				y = x;
+				x = x.getParent();
+			} else {
+				// Case 2, with both symmetric cases
+				if (((x.getLeft() == y)
+						&& (y.getHeight() - y.getLeft().getHeight() == 1))
+						|| ((x.getRight() == y) && (y.getHeight()
+								- y.getRight().getHeight() == 1))) {
 
-			x.setSize(1 + x.getLeft().getSize() + x.getRight().getSize());
-			// Doesn't this ruin complexity, making it always log n for every
-			// insertion?
+					rotate(x, y);
+					rebalanceCount += 1;
+					x.setHeight(x.getHeight() - 1);
+					rebalanceCount += 1;
 
-			x = x.getParent();
+					return rebalanceCount;
+				}
+				// Case 3
+				IAVLNode b;
+				if (x.getLeft() == y) {
+					b = y.getRight();
+				} else {
+					b = y.getLeft();
+				}
+				rotate(y, b);
+				rebalanceCount += 1;
+				rotate(x, b);
+				rebalanceCount += 1;
+				x.setHeight(x.getHeight() - 1);
+				rebalanceCount += 1;
+				y.setHeight(y.getHeight() - 1);
+				rebalanceCount += 1;
+				b.setHeight(b.getHeight() + 1);
+				rebalanceCount += 1;
+
+				return rebalanceCount;
+
+			}
+
 		}
-
-		// Rebalance, fixing heights and sizes as we go
 
 		return rebalanceCount;
 	}
