@@ -150,12 +150,16 @@ public class AVLTree {
 
 		// Insert the node
 		IAVLNode newNode = new AVLNode(k, i);
+		newNode.setLeft(EXT);
+		newNode.setRight(EXT);
+		newNode.setParent(insertionPoint);
+
 		if (insertionPoint.getKey() > k) {
 			insertionPoint.setLeft(newNode);
 		} else {
 			insertionPoint.setRight(newNode);
 		}
-		
+
 		int rebalanceCount = 0;
 		// Fix heights and sizes
 
