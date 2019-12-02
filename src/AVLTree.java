@@ -4,6 +4,12 @@
  *
  * An implementation of a AVL Tree with distinct integer keys and info
  *
+ * Submitted by:
+ * 
+ * Itai Zemah itaizemah 209637453
+ *
+ * Oded Carmon odedcarmon 208116517
+ * 
  */
 
 public class AVLTree {
