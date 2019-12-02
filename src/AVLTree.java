@@ -12,7 +12,6 @@ public class AVLTree {
 	private IAVLNode EXT = new AVLNode(); // Shared external leaf
 	private IAVLNode root = EXT;
 
-
 	/**
 	 * public boolean empty()
 	 *
@@ -139,7 +138,7 @@ public class AVLTree {
 			newNode.setLeft(EXT);
 			newNode.setRight(EXT);
 			root = newNode;
-
+			size += 1;
 			return 0;
 		}
 
@@ -150,6 +149,7 @@ public class AVLTree {
 
 		// Insert the node
 		IAVLNode newNode = new AVLNode(k, i);
+		size += 1;
 		newNode.setLeft(EXT);
 		newNode.setRight(EXT);
 		newNode.setParent(insertionPoint);
@@ -345,12 +345,6 @@ public class AVLTree {
 		public int getHeight(); // Returns the height of the node (-1 for
 								// virtual nodes)
 
-		public int getSize(); // Returns the size of subtree including this node
-								// (0 for virtual nodes)
-
-		public void setSize(int size); // sets the size of the subtree including
-										// this node
-
 	}
 
 	/**
@@ -369,7 +363,6 @@ public class AVLTree {
 		private IAVLNode parent;
 		private boolean realNode;
 		private int height;
-		private int size;
 
 		/**
 		 * public AVLNode(int key, String value)
@@ -385,7 +378,7 @@ public class AVLTree {
 			parent = null;
 			realNode = true;
 			height = 0;
-			size = 1;
+
 		}
 
 		/**
@@ -402,7 +395,7 @@ public class AVLTree {
 			parent = null;
 			realNode = false;
 			height = -1;
-			size = 0;
+
 		}
 
 		public int getKey() {
@@ -450,13 +443,6 @@ public class AVLTree {
 			return height;
 		}
 
-		public int getSize() {
-			return size;
-		}
-
-		public void setSize(int size) {
-			this.size = size;
-		}
 	}
 
 }
