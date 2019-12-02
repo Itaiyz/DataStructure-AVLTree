@@ -162,6 +162,23 @@ public class AVLTree {
 
 		int rebalanceCount = 0;
 		// Fix heights and sizes
+		// Waiting for clarification at
+		// https://moodle.tau.ac.il/mod/forum/discuss.php?d=19338 on how to
+		// count promotions/demotions inside a rotation
+		IAVLNode x = insertionPoint;
+		while (x != null) {
+
+			x.setHeight(1 + Math.max(x.getLeft().getHeight(),
+					x.getRight().getHeight()));
+			// This last part is incorrect, we don't want to change all the
+			// ranks all the way, only until rank problem is fixed
+
+			x.setSize(1 + x.getLeft().getSize() + x.getRight().getSize());
+			// Doesn't this ruin complexity, making it always log n for every
+			// insertion?
+
+			x = x.getParent();
+		}
 
 		// Rebalance, fixing heights and sizes as we go
 
