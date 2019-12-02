@@ -8,17 +8,10 @@
 
 public class AVLTree {
 
-	private IAVLNode root;
-	private int size;
+	private int size = 0;
+	private IAVLNode EXT = new AVLNode(); // Shared external leaf
+	private IAVLNode root = EXT;
 
-	public AVLTree(IAVLNode root) {
-		this.root = root;
-		if (root.isRealNode()) {
-			size = 1;
-		} else {
-			size = 0;
-		}
-	}
 
 	/**
 	 * public boolean empty()
