@@ -134,6 +134,15 @@ public class AVLTree {
 	 * if an item with key k already exists in the tree.
 	 */
 	public int insert(int k, String i) {
+		if (empty()) {
+			IAVLNode newNode = new AVLNode(k, i);
+			newNode.setLeft(EXT);
+			newNode.setRight(EXT);
+			root = newNode;
+
+			return 0;
+		}
+
 		IAVLNode insertionPoint = searchNode(k);
 		if (insertionPoint.getKey() == k) {
 			return -1;
