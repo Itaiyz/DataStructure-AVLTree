@@ -277,6 +277,39 @@ public class AVLTree {
 	}
 
 	/**
+	 * Calls an internal recursive version. Returns an array which contains all
+	 * nodes in the tree, sorted by their respective keys, or an empty array if
+	 * the tree is empty.
+	 */
+	private IAVLNode[] nodesToArray() {
+		return nodesToArray(root, new IAVLNode[size()], new int[] { 0 });
+	}
+
+	/**
+	 * Recursively traverses the tree in-order and adds nodes to a pre-supplied
+	 * array of the proper size, each function call returns a pointer to the
+	 * array up the call tree, which will eventually be returned to the
+	 * non-recursive version of the function.
+	 * 
+	 * The array i holds a single integer which signifies what is the next index
+	 * in the node array to be filled.
+	 */
+	private IAVLNode[] nodesToArray(IAVLNode node, IAVLNode[] arr, int[] i) {
+		if (node.isRealNode()) {
+
+			nodesToArray(node.getLeft(), arr, i);
+			arr[i[0]] = node;
+			i[0] += 1;
+			nodesToArray(node.getRight(), arr, i);
+			return arr;
+
+		}
+
+		return arr;
+
+	}
+
+	/**
 	 * public int[] keysToArray()
 	 *
 	 * Returns a sorted array which contains all keys in the tree, or an empty
