@@ -80,25 +80,56 @@ public class AVLTree {
 	}
 
 	/**
-	 * Performs right rotation. Precondition: child.getParent()==parent.
+	 * Performs rotation based on given parent and child nodes (rotates on the
+	 * edge between them). If child.getParent()!=parent does nothing.
 	 * 
 	 * Based on diagram seen in class in BST presentation on slide 31.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
 	 */
-	private void rotateRight(IAVLNode child, IAVLNode parent) {
-		if (root == parent) { // Ensure AVLTree's pointers are correct
+	private void rotate(IAVLNode parent, IAVLNode child) {
+
+		if (child.getParent() != parent) {
+			return;
+		}
+
+		// Ensure AVLTree's pointers are correct
+		if (root == parent) {
 			root = child;
-		} else { // Ensure parent of parent's pointers are correct
+			child.setParent(null);
+		}
+		// Ensure parent of parent's pointers are correct
+		else {
 			IAVLNode grandparent = parent.getParent();
 			if (grandparent.getLeft() == parent) {
 				grandparent.setLeft(child);
 			} else {
 				grandparent.setRight(child);
 			}
+			child.setParent(grandparent);
 		}
-		IAVLNode A = child.getLeft();
-		IAVLNode B = child.getRight();
-		IAVLNode C= parent.getRight()
+
+		// Perform left or right rotation appropriately
+		if (parent.getLeft() == child) {
+
+			IAVLNode x = child;
+			IAVLNode y = parent;
+			IAVLNode B = x.getRight();
+
+			x.setRight(y);
+			y.setParent(x);
+			y.setLeft(B);
+			B.setParent(y);
+		} else {
+			IAVLNode x = parent;
+			IAVLNode y = child;
+			IAVLNode B = y.getLeft();
+
+			y.setLeft(x);
+			x.setParent(y);
+			x.setRight(B);
+			B.setParent(x);
+		}
+
 	}
 
 	/**
