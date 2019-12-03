@@ -340,7 +340,49 @@ public class AVLTree {
 	 * returns -1 if an item with key k was not found in the tree.
 	 */
 	public int delete(int k) {
-		return 42; // to be replaced by student code
+		if (empty()) {
+			return -1;
+		}
+
+		IAVLNode node = searchNode(k);
+		if (node.getKey() != k) {
+			return -1;
+		}
+
+		size -= 1;
+
+		// Remove the node appropriately, whether it is a leaf, a unary node, or
+		// a binary node
+
+		IAVLNode z = null;
+
+		// Node is leaf
+		if (!node.getLeft().isRealNode() && !node.getRight().isRealNode()) {
+			z = deleteLeaf(node);
+		} else {
+			// Node is unary, checked using XOR operator
+			if (node.getLeft().isRealNode() ^ node.getRight().isRealNode()) {
+				z = deleteUnary(node);
+			} else {
+				// Node is binary, we find successor, switch between them, and
+				// then delete as unary node
+
+				z = deleteUnary(deleteBinary(node));
+
+			}
+		}
+
+		// Rebalance, starting from z
+		int rebalanceCount = 0;
+		// Add while x!= null loop and do cases from presentation
+
+		// If deleted last node, put virtual node as root, like when
+		// constructing new tree
+		if (empty()) {
+			root = EXT;
+		}
+		return rebalanceCount;
+
 	}
 
 	/**
