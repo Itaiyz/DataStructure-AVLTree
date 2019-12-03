@@ -227,6 +227,111 @@ public class AVLTree {
 	}
 
 	/**
+	 * private IAVLNode deleteLeaf(IAVLNode node)
+	 * 
+	 * deletes the leaf node, returns node.getParent() to start rebalancing
+	 */
+	private IAVLNode deleteLeaf(IAVLNode node) {
+		if (node.getParent().getLeft() == node) {
+			node.getParent().setLeft(EXT);
+			;
+		} else {
+			node.getParent().setRight(EXT);
+		}
+
+		IAVLNode z = node.getParent();
+
+		// Clearing node's pointers, as if it was newly created
+		node.setParent(null);
+		node.setRight(null);
+		node.setLeft(null);
+
+		return z;
+	}
+
+	/**
+	 * private IAVLNode deleteUnary(IAVLNode node)
+	 * 
+	 * deletes the unary node, returns node.getParent() to start rebalancing
+	 */
+	private IAVLNode deleteUnary(IAVLNode node) {
+		if (node.getParent().getLeft() == node) {
+			if (node.getLeft().isRealNode()) {
+				node.getParent().setLeft(node.getLeft());
+				node.getLeft().setParent(node.getParent());
+			} else {
+				node.getParent().setLeft(node.getRight());
+				node.getRight().setParent(node.getParent());
+			}
+		} else {
+			if (node.getLeft().isRealNode()) {
+				node.getParent().setRight(node.getLeft());
+				node.getLeft().setParent(node.getParent());
+			} else {
+				node.getParent().setRight(node.getRight());
+				node.getRight().setParent(node.getParent());
+			}
+		}
+
+		IAVLNode z = node.getParent();
+
+		// Clearing node's pointers, as if it was newly created
+		node.setParent(null);
+		node.setRight(null);
+		node.setLeft(null);
+
+		return z;
+	}
+
+	/**
+	 * private IAVLNode deleteBinary(IAVLNode node)
+	 * 
+	 * deletes the binary node, returns a pointer to a dummy node replacing
+	 * node's successor in the tree for unary deletion
+	 */
+	private IAVLNode deleteBinary(IAVLNode node) {
+		IAVLNode successor = node.getRight();
+		IAVLNode dummy = successor.getLeft();
+
+		while (dummy.isRealNode()) {
+			successor = dummy;
+			dummy = dummy.getLeft();
+		}
+
+		dummy = new AVLNode();
+		dummy.setParent(successor.getParent());
+		dummy.setLeft(successor.getLeft());
+		dummy.setRight(successor.getRight());
+
+		successor.setParent(node.getParent());
+		successor.setRight(node.getRight());
+		successor.setLeft(node.getLeft());
+
+		if (node.getParent().getLeft() == node) {
+			successor.getParent().setLeft(successor);
+		} else {
+			successor.getParent().setRight(successor);
+		}
+
+		successor.getRight().setParent(successor);
+		successor.getLeft().setParent(successor);
+
+		if (dummy.getParent().getLeft() == successor) {
+			dummy.getParent().setLeft(dummy);
+		} else {
+			dummy.getParent().setRight(dummy);
+		}
+
+		// Only need to set right child's parent since the other is
+		// definitely virtual
+		if (dummy.getRight().isRealNode()) {
+			dummy.getRight().setParent(dummy);
+		}
+
+		return dummy;
+	}
+
+	/**
 	 * public int delete(int k)
 	 *
 	 * deletes an item with key k from the binary tree, if it is there; the tree
