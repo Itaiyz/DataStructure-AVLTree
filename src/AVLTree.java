@@ -638,7 +638,30 @@ public class AVLTree {
 	 * search(x) != null postcondition: none
 	 */
 	public AVLTree[] split(int x) {
-		return null;
+		IAVLNode node = searchNode(x);
+		AVLTree left = new AVLTree();
+		AVLTree right = new AVLTree();
+
+		AVLTree t;
+
+		left.root = node.getLeft();
+		right.root = node.getRight();
+
+		IAVLNode p = node.getParent();
+		while (p != null) {
+			t = new AVLTree();
+			if (p.getRight() == node) {
+				t.root = p.getLeft();
+				left.join(p, t);
+			} else {
+				t.root = p.getRight();
+				right.join(p, t);
+			}
+			node = p;
+			p = p.getParent();
+		}
+
+		return new AVLTree[] { left, right };
 	}
 
 	/**
