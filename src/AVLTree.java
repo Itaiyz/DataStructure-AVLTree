@@ -139,6 +139,9 @@ public class AVLTree {
 	 * if an item with key k already exists in the tree.
 	 */
 	public int insert(int k, String i) {
+
+		int rebalanceCount = 0;
+
 		if (empty()) {
 			IAVLNode newNode = new AVLNode(k, i);
 			newNode.setLeft(EXT);
@@ -165,8 +168,6 @@ public class AVLTree {
 		} else {
 			insertionPoint.setRight(newNode);
 		}
-
-		int rebalanceCount = 0;
 
 		// Waiting for clarification at
 		// https://moodle.tau.ac.il/mod/forum/discuss.php?d=19338 on how to
@@ -340,6 +341,9 @@ public class AVLTree {
 	 * returns -1 if an item with key k was not found in the tree.
 	 */
 	public int delete(int k) {
+
+		int rebalanceCount = 0;
+
 		if (empty()) {
 			return -1;
 		}
@@ -352,7 +356,7 @@ public class AVLTree {
 		size -= 1;
 
 		// Remove the node appropriately, whether it is a leaf, a unary node, or
-		// a binary node
+		// a binary node, and assigns the node's parent to z
 
 		IAVLNode z = null;
 
@@ -372,9 +376,112 @@ public class AVLTree {
 			}
 		}
 
-		// Rebalance, starting from z
-		int rebalanceCount = 0;
-		// Add while x!= null loop and do cases from presentation
+		// Rebalance, starting from z, going up the tree until we stop having a
+		// 2,2 node
+		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
+				- z.getRight().getHeight() == 4)) {
+
+			// Case 1
+			if ((z.getHeight() - z.getLeft().getHeight() == 2)
+					&& (z.getHeight() - z.getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z = z.getParent();
+			}
+
+			// Case 2, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (2 * z.getRight().getHeight()
+							- z.getRight().getRight().getHeight()
+							- z.getRight().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z.getRight().setHeight(z.getRight().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				break;
+			}
+
+			// Case 2, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (2 * z.getLeft().getHeight()
+							- z.getLeft().getRight().getHeight()
+							- z.getLeft().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z.getLeft().setHeight(z.getLeft().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				break;
+			}
+
+			// Case 3, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (z.getRight().getHeight()
+							- z.getRight().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children
+			}
+
+			// Case 3, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (z.getLeft().getHeight()
+							- z.getLeft().getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children
+			}
+
+			// Case 4, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (z.getRight().getHeight()
+							- z.getRight().getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				z.getRight().setHeight(z.getRight().getHeight() - 1);
+				rebalanceCount += 1;
+				z.getRight().getLeft()
+						.setHeight(z.getRight().getLeft().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z.getRight(), z.getRight().getLeft());
+				rebalanceCount += 1;
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children's
+												// children
+			}
+
+			// Case 4, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (z.getLeft().getHeight()
+							- z.getLeft().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				z.getLeft().setHeight(z.getLeft().getHeight() - 1);
+				rebalanceCount += 1;
+				z.getLeft().getRight()
+						.setHeight(z.getLeft().getRight().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z.getLeft(), z.getLeft().getRight());
+				rebalanceCount += 1;
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children's
+												// children
+			}
+
+		}
 
 		// If deleted last node, put virtual node as root, like when
 		// constructing new tree
@@ -493,8 +600,8 @@ public class AVLTree {
 	 * public join(IAVLNode x, AVLTree t)
 	 *
 	 * joins t and x with the tree. Returns the complexity of the operation
-	 * (rank difference between the tree and t) precondition: keys(x,t) < keys()
-	 * or keys(x,t) > keys() postcondition: none
+	 * (1+rank difference between the tree and t) precondition: keys(x,t) <
+	 * keys() or keys(x,t) > keys() postcondition: none
 	 */
 	public int join(IAVLNode x, AVLTree t) {
 		return 0;
