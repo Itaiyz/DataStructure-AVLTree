@@ -140,8 +140,6 @@ public class AVLTree {
 	 */
 	public int insert(int k, String i) {
 
-		int rebalanceCount = 0;
-
 		if (empty()) {
 			IAVLNode newNode = new AVLNode(k, i);
 			newNode.setLeft(EXT);
@@ -169,14 +167,27 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
-		// Waiting for clarification at
-		// https://moodle.tau.ac.il/mod/forum/discuss.php?d=19338 on how to
-		// count promotions/demotions inside a rotation. Currently also counting
-		// internal promotions/demotions that appear inside rotations
-		// Implementing cases appearing in WAVL presentation on slide 22
-		// https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/WAVL.pptx
+		// Implementing cases
 		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
+		return rebalanceInsert(x, y);
+	}
+
+	/**
+	 * private rebalanceInsert(IAVLNode x)
+	 * 
+	 * Performs all rebalancing cases for insertion into AVL tree, as appearing
+	 * in WAVL presentation on slide 22
+	 * https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/WAVL.pptx
+	 *
+	 * Used by insert and join functions
+	 * 
+	 * @param y = x's new child
+	 */
+	private int rebalanceInsert(IAVLNode x, IAVLNode y) {
+
+		int rebalanceCount = 0;
+
 		while (x != null) {
 			// Case 1 (rank differences are 0,1 and so their sum is 1)
 			if (2 * x.getHeight() - x.getLeft().getHeight()
@@ -225,6 +236,7 @@ public class AVLTree {
 		}
 
 		return rebalanceCount;
+
 	}
 
 	/**
@@ -637,7 +649,69 @@ public class AVLTree {
 	 * keys() or keys(x,t) > keys() postcondition: none
 	 */
 	public int join(IAVLNode x, AVLTree t) {
-		return 0;
+
+		if (root.getHeight() == t.getRoot().getHeight()) {
+			if (x.getKey() < root.getKey()) {
+				x.setRight(root);
+				x.setLeft(t.getRoot());
+
+			} else {
+				x.setLeft(root);
+				x.setRight(t.getRoot());
+			}
+			root.setParent(x);
+			t.getRoot().setParent(x);
+			x.setHeight(root.getHeight() + 1);
+			root = x;
+		}
+
+		if (root.getHeight() > t.getRoot().getHeight()) {
+			IAVLNode b = root;
+			while (b.getHeight() > t.getRoot().getHeight()) {
+				b = b.getLeft();
+			}
+			IAVLNode c = b.getParent();
+			x.setParent(c);
+			x.setHeight(t.getRoot().getHeight() + 1);
+			if (x.getKey() < c.getKey()) {
+				c.setLeft(x);
+				x.setLeft(t.getRoot());
+				x.setRight(b);
+			} else {
+				c.setRight(x);
+				x.setRight(t.getRoot());
+				x.setLeft(b);
+			}
+			t.getRoot().setParent(x);
+			b.setParent(x);
+
+			rebalanceInsert(c, x);
+		}
+
+		if (root.getHeight() < t.getRoot().getHeight()) {
+			IAVLNode b = t.getRoot();
+			while (b.getHeight() > root.getHeight()) {
+				b = b.getLeft();
+			}
+			IAVLNode c = b.getParent();
+			x.setParent(c);
+			x.setHeight(root.getHeight() + 1);
+			if (x.getKey() < c.getKey()) {
+				c.setLeft(x);
+				x.setLeft(root);
+				x.setRight(b);
+			} else {
+				c.setRight(x);
+				x.setRight(root);
+				x.setLeft(b);
+			}
+			root.setParent(x);
+			b.setParent(x);
+			root = t.getRoot();
+			rebalanceInsert(c, x);
+		}
+
+		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
 	}
 
 	/**
