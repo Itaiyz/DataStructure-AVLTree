@@ -139,6 +139,9 @@ public class AVLTree {
 	 * if an item with key k already exists in the tree.
 	 */
 	public int insert(int k, String i) {
+
+		int rebalanceCount = 0;
+
 		if (empty()) {
 			IAVLNode newNode = new AVLNode(k, i);
 			newNode.setLeft(EXT);
@@ -165,8 +168,6 @@ public class AVLTree {
 		} else {
 			insertionPoint.setRight(newNode);
 		}
-
-		int rebalanceCount = 0;
 
 		// Waiting for clarification at
 		// https://moodle.tau.ac.il/mod/forum/discuss.php?d=19338 on how to
@@ -227,6 +228,111 @@ public class AVLTree {
 	}
 
 	/**
+	 * private IAVLNode deleteLeaf(IAVLNode node)
+	 * 
+	 * deletes the leaf node, returns node.getParent() to start rebalancing
+	 */
+	private IAVLNode deleteLeaf(IAVLNode node) {
+		if (node.getParent().getLeft() == node) {
+			node.getParent().setLeft(EXT);
+			;
+		} else {
+			node.getParent().setRight(EXT);
+		}
+
+		IAVLNode z = node.getParent();
+
+		// Clearing node's pointers, as if it was newly created
+		node.setParent(null);
+		node.setRight(null);
+		node.setLeft(null);
+
+		return z;
+	}
+
+	/**
+	 * private IAVLNode deleteUnary(IAVLNode node)
+	 * 
+	 * deletes the unary node, returns node.getParent() to start rebalancing
+	 */
+	private IAVLNode deleteUnary(IAVLNode node) {
+		if (node.getParent().getLeft() == node) {
+			if (node.getLeft().isRealNode()) {
+				node.getParent().setLeft(node.getLeft());
+				node.getLeft().setParent(node.getParent());
+			} else {
+				node.getParent().setLeft(node.getRight());
+				node.getRight().setParent(node.getParent());
+			}
+		} else {
+			if (node.getLeft().isRealNode()) {
+				node.getParent().setRight(node.getLeft());
+				node.getLeft().setParent(node.getParent());
+			} else {
+				node.getParent().setRight(node.getRight());
+				node.getRight().setParent(node.getParent());
+			}
+		}
+
+		IAVLNode z = node.getParent();
+
+		// Clearing node's pointers, as if it was newly created
+		node.setParent(null);
+		node.setRight(null);
+		node.setLeft(null);
+
+		return z;
+	}
+
+	/**
+	 * private IAVLNode deleteBinary(IAVLNode node)
+	 * 
+	 * deletes the binary node, returns a pointer to a dummy node replacing
+	 * node's successor in the tree for unary deletion
+	 */
+	private IAVLNode deleteBinary(IAVLNode node) {
+		IAVLNode successor = node.getRight();
+		IAVLNode dummy = successor.getLeft();
+
+		while (dummy.isRealNode()) {
+			successor = dummy;
+			dummy = dummy.getLeft();
+		}
+
+		dummy = new AVLNode();
+		dummy.setParent(successor.getParent());
+		dummy.setLeft(successor.getLeft());
+		dummy.setRight(successor.getRight());
+
+		successor.setParent(node.getParent());
+		successor.setRight(node.getRight());
+		successor.setLeft(node.getLeft());
+
+		if (node.getParent().getLeft() == node) {
+			successor.getParent().setLeft(successor);
+		} else {
+			successor.getParent().setRight(successor);
+		}
+
+		successor.getRight().setParent(successor);
+		successor.getLeft().setParent(successor);
+
+		if (dummy.getParent().getLeft() == successor) {
+			dummy.getParent().setLeft(dummy);
+		} else {
+			dummy.getParent().setRight(dummy);
+		}
+
+		// Only need to set right child's parent since the other is
+		// definitely virtual
+		if (dummy.getRight().isRealNode()) {
+			dummy.getRight().setParent(dummy);
+		}
+
+		return dummy;
+	}
+
+	/**
 	 * public int delete(int k)
 	 *
 	 * deletes an item with key k from the binary tree, if it is there; the tree
@@ -235,7 +341,155 @@ public class AVLTree {
 	 * returns -1 if an item with key k was not found in the tree.
 	 */
 	public int delete(int k) {
-		return 42; // to be replaced by student code
+
+		int rebalanceCount = 0;
+
+		if (empty()) {
+			return -1;
+		}
+
+		IAVLNode node = searchNode(k);
+		if (node.getKey() != k) {
+			return -1;
+		}
+
+		size -= 1;
+
+		// Remove the node appropriately, whether it is a leaf, a unary node, or
+		// a binary node, and assigns the node's parent to z
+
+		IAVLNode z = null;
+
+		// Node is leaf
+		if (!node.getLeft().isRealNode() && !node.getRight().isRealNode()) {
+			z = deleteLeaf(node);
+		} else {
+			// Node is unary, checked using XOR operator
+			if (node.getLeft().isRealNode() ^ node.getRight().isRealNode()) {
+				z = deleteUnary(node);
+			} else {
+				// Node is binary, we find successor, switch between them, and
+				// then delete as unary node
+
+				z = deleteUnary(deleteBinary(node));
+
+			}
+		}
+
+		// Rebalance, starting from z, going up the tree until we stop having a
+		// 2,2 node
+		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
+				- z.getRight().getHeight() == 4)) {
+
+			// Case 1
+			if ((z.getHeight() - z.getLeft().getHeight() == 2)
+					&& (z.getHeight() - z.getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z = z.getParent();
+			}
+
+			// Case 2, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (2 * z.getRight().getHeight()
+							- z.getRight().getRight().getHeight()
+							- z.getRight().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z.getRight().setHeight(z.getRight().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				break;
+			}
+
+			// Case 2, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (2 * z.getLeft().getHeight()
+							- z.getLeft().getRight().getHeight()
+							- z.getLeft().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 1);
+				rebalanceCount += 1;
+				z.getLeft().setHeight(z.getLeft().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				break;
+			}
+
+			// Case 3, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (z.getRight().getHeight()
+							- z.getRight().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children
+			}
+
+			// Case 3, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (z.getLeft().getHeight()
+							- z.getLeft().getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children
+			}
+
+			// Case 4, as appearing in the presentation
+			if ((z.getHeight() - z.getLeft().getHeight() == 3)
+					&& (z.getRight().getHeight()
+							- z.getRight().getRight().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				z.getRight().setHeight(z.getRight().getHeight() - 1);
+				rebalanceCount += 1;
+				z.getRight().getLeft()
+						.setHeight(z.getRight().getLeft().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z.getRight(), z.getRight().getLeft());
+				rebalanceCount += 1;
+				rotate(z, z.getRight());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children's
+												// children
+			}
+
+			// Case 4, mirror image
+			if ((z.getHeight() - z.getRight().getHeight() == 3)
+					&& (z.getLeft().getHeight()
+							- z.getLeft().getLeft().getHeight() == 2)) {
+				z.setHeight(z.getHeight() - 2);
+				rebalanceCount += 2;// Should this be 2 or 1?
+				z.getLeft().setHeight(z.getLeft().getHeight() - 1);
+				rebalanceCount += 1;
+				z.getLeft().getRight()
+						.setHeight(z.getLeft().getRight().getHeight() + 1);
+				rebalanceCount += 1;
+				rotate(z.getLeft(), z.getLeft().getRight());
+				rebalanceCount += 1;
+				rotate(z, z.getLeft());
+				rebalanceCount += 1;
+				z = z.getParent().getParent(); // Since z's parent is now one of
+												// his previous children's
+												// children
+			}
+
+		}
+
+		// If deleted last node, put virtual node as root, like when
+		// constructing new tree
+		if (empty()) {
+			root = EXT;
+		}
+		return rebalanceCount;
+
 	}
 
 	/**
@@ -379,8 +633,8 @@ public class AVLTree {
 	 * public join(IAVLNode x, AVLTree t)
 	 *
 	 * joins t and x with the tree. Returns the complexity of the operation
-	 * (rank difference between the tree and t) precondition: keys(x,t) < keys()
-	 * or keys(x,t) > keys() postcondition: none
+	 * (1+rank difference between the tree and t) precondition: keys(x,t) <
+	 * keys() or keys(x,t) > keys() postcondition: none
 	 */
 	public int join(IAVLNode x, AVLTree t) {
 		return 0;
