@@ -630,6 +630,26 @@ public class AVLTree {
 		return root;
 	}
 
+	
+	/**
+	 * private void setSubtreeSize(AVLTree t)
+	 * Calculates subtree size in O(#nodes), using nodesToArray
+	 */
+	private void setSubtreeSize(AVLTree t) {
+		IAVLNode[] nodeArray = nodesToArray(t.getRoot(),new IAVLNode[size()], new int[] { 0 });
+		int size=0;
+		for(IAVLNode node:nodeArray) {
+			if(node!=null) {
+				size+=1;
+			}
+			else {
+				break;
+			}
+		}
+		t.size=size;
+	}
+	
+	
 	/**
 	 * public string split(int x)
 	 *
