@@ -665,16 +665,21 @@ public class AVLTree {
 		AVLTree t;
 
 		left.root = node.getLeft();
+		setSubtreeSize(left);
+		
 		right.root = node.getRight();
+		setSubtreeSize(right);
 
 		IAVLNode p = node.getParent();
 		while (p != null) {
 			t = new AVLTree();
 			if (p.getRight() == node) {
 				t.root = p.getLeft();
+				setSubtreeSize(t);
 				left.join(p, t);
 			} else {
 				t.root = p.getRight();
+				setSubtreeSize(t);
 				right.join(p, t);
 			}
 			node = p;
