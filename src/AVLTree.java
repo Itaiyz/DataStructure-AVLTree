@@ -692,7 +692,9 @@ public class AVLTree {
 	 * keys() or keys(x,t) > keys() postcondition: none
 	 */
 	public int join(IAVLNode x, AVLTree t) {
-
+		
+		size=size+t.size()+1;
+		
 		if (root.getHeight() == t.getRoot().getHeight()) {
 			if (x.getKey() < root.getKey()) {
 				x.setRight(root);
