@@ -138,7 +138,9 @@ public class AVLTree {
 			x.setRight(y);
 			y.setParent(x);
 			y.setLeft(B);
-			B.setParent(y);
+			if (B.isRealNode()) {
+				B.setParent(y);
+			}
 		} else {
 			IAVLNode x = parent;
 			IAVLNode y = child;
@@ -147,7 +149,9 @@ public class AVLTree {
 			y.setLeft(x);
 			x.setParent(y);
 			x.setRight(B);
-			B.setParent(x);
+			if (B.isRealNode()) {
+				B.setParent(x);
+			}
 		}
 
 	}
