@@ -18,13 +18,57 @@ import java.util.stream.IntStream;
 
 public class Measurements {
 
-	public int[] runExperiment(int i) {
-		int n = i*10000;
-		
-		List<Integer> keysToInsert = IntStream.range(0, n).boxed().collect(Collectors.toList());
+	public static Number[] runExperiment(int n) {
+
+		List<Integer> keysToInsert = IntStream.range(0, n).boxed()
+				.collect(Collectors.toList());
 		java.util.Collections.shuffle(keysToInsert);
-		
-		return null;
+
+		AVLTree t = new AVLTree();
+
+		int maxInsert = 0;
+		int totalInsert = 0;
+		int currentInsert;
+
+		for (int j = 0; j < n; j++) {
+			currentInsert = t.insert(keysToInsert.get(j),
+					Integer.toString(keysToInsert.get(j)));
+			if (currentInsert > maxInsert) {
+				maxInsert = currentInsert;
+			}
+			totalInsert += currentInsert;
+		}
+
+		int maxDelete = 0;
+		int totalDelete = 0;
+		int currentDelete;
+
+		for (int j = n - 1; j >= 0; j--) {
+			currentDelete = t.delete(j);
+			if (currentDelete > maxDelete) {
+				maxDelete = currentDelete;
+			}
+			totalDelete += currentDelete;
+		}
+
+		return new Number[] { (float) totalInsert / n, (float) totalDelete / n,
+				maxInsert, maxDelete };
 	}
-	
+
+	public static void main(String[] args) {
+		Number[] res = runExperiment(10);
+		for (Number num : res) {
+			System.out.print(num + " ");
+		}
+		System.out.println();
+
+		for (int i = 1; i < 11; i++) {
+			res = runExperiment(i * 10000);
+			for (Number num : res) {
+				System.out.print(num + " ");
+			}
+			System.out.println();
+		}
+	}
+
 }
