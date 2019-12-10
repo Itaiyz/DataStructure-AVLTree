@@ -299,24 +299,33 @@ public class AVLTree {
 	 * deletes the unary node, returns node.getParent() to start rebalancing
 	 */
 	private IAVLNode deleteUnary(IAVLNode node) {
-		if (node.getParent().getLeft() == node) {
+		if (root == node) {
 			if (node.getLeft().isRealNode()) {
-				node.getParent().setLeft(node.getLeft());
-				node.getLeft().setParent(node.getParent());
+				root = node.getLeft();
+				node.getLeft().setParent(null);
 			} else {
-				node.getParent().setLeft(node.getRight());
-				node.getRight().setParent(node.getParent());
+				root = node.getRight();
+				node.getRight().setParent(null);
 			}
 		} else {
-			if (node.getLeft().isRealNode()) {
-				node.getParent().setRight(node.getLeft());
-				node.getLeft().setParent(node.getParent());
+			if (node.getParent().getLeft() == node) {
+				if (node.getLeft().isRealNode()) {
+					node.getParent().setLeft(node.getLeft());
+					node.getLeft().setParent(node.getParent());
+				} else {
+					node.getParent().setLeft(node.getRight());
+					node.getRight().setParent(node.getParent());
+				}
 			} else {
-				node.getParent().setRight(node.getRight());
-				node.getRight().setParent(node.getParent());
+				if (node.getLeft().isRealNode()) {
+					node.getParent().setRight(node.getLeft());
+					node.getLeft().setParent(node.getParent());
+				} else {
+					node.getParent().setRight(node.getRight());
+					node.getRight().setParent(node.getParent());
+				}
 			}
 		}
-
 		IAVLNode z = node.getParent();
 
 		// Clearing node's pointers, as if it was newly created
