@@ -428,6 +428,11 @@ public class AVLTree {
 			}
 		}
 
+		if (z.getHeight() < 1) {
+			throw (new RuntimeException(
+					"z is someone's parent, must be at least height 1"));
+		}
+
 		// Rebalance, starting from z, going up the tree until we stop having a
 		// 2,2 node
 		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
@@ -437,6 +442,10 @@ public class AVLTree {
 			if ((z.getHeight() - z.getLeft().getHeight() == 2)
 					&& (z.getHeight() - z.getRight().getHeight() == 2)) {
 				z.setHeight(z.getHeight() - 1);
+				if (z.getHeight() < 0) {
+					throw (new RuntimeException(
+							"internal node height cannot drop below 0"));
+				}
 				rebalanceCount += 1;
 				z = z.getParent();
 			}
