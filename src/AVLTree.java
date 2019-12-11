@@ -530,6 +530,7 @@ public class AVLTree {
 				z = z.getParent().getParent(); // Since z's parent is now
 												// one of
 												// his previous children
+				continue;
 			}
 
 			// Case 3, mirror image
@@ -543,6 +544,7 @@ public class AVLTree {
 				z = z.getParent().getParent(); // Since z's parent is now
 												// one of
 												// his previous children
+				continue;
 			}
 
 			// Case 4, as appearing in the presentation
@@ -564,6 +566,7 @@ public class AVLTree {
 												// one of
 												// his previous children's
 												// children
+				continue;
 			}
 
 			// Case 4, mirror image
@@ -585,6 +588,7 @@ public class AVLTree {
 												// one of
 												// his previous children's
 												// children
+				continue;
 			}
 
 		}
