@@ -180,37 +180,31 @@ public class AVLTree {
 			return -1;
 		}
 
-		try {
-			// Insert the node
-			IAVLNode newNode = new AVLNode(k, i);
-			size += 1;
-			newNode.setLeft(EXT);
-			newNode.setRight(EXT);
-			newNode.setParent(insertionPoint);
+		// Insert the node
+		IAVLNode newNode = new AVLNode(k, i);
+		size += 1;
+		newNode.setLeft(EXT);
+		newNode.setRight(EXT);
+		newNode.setParent(insertionPoint);
 
-			if (insertionPoint.getKey() > k) {
-				insertionPoint.setLeft(newNode);
-			} else {
-				insertionPoint.setRight(newNode);
-			}
-
-			// The parent is not a leaf, no rebalancing needed
-			if (insertionPoint.getHeight() > 0) {
-
-				return 0;
-			}
-
-			// Implementing rebalancing cases
-			IAVLNode y = newNode;
-			IAVLNode x = insertionPoint;
-
-			return rebalanceInsert(x, y);
+		if (insertionPoint.getKey() > k) {
+			insertionPoint.setLeft(newNode);
+		} else {
+			insertionPoint.setRight(newNode);
 		}
 
-		finally {
-			System.out.println("After inserting " + k);
-			this.print2DUtil(root, 0);
+		// The parent is not a leaf, no rebalancing needed
+		if (insertionPoint.getHeight() > 0) {
+
+			return 0;
 		}
+
+		// Implementing rebalancing cases
+		IAVLNode y = newNode;
+		IAVLNode x = insertionPoint;
+
+		return rebalanceInsert(x, y);
+
 	}
 
 	/**
@@ -296,9 +290,16 @@ public class AVLTree {
 	 * deletes the leaf node, returns node.getParent() to start rebalancing
 	 */
 	private IAVLNode deleteLeaf(IAVLNode node) {
+		if (root == node) {
+			node.setRight(null);
+			node.setLeft(null);
+			root = EXT;
+			return root;
+		}
+
 		if (node.getParent().getLeft() == node) {
 			node.getParent().setLeft(EXT);
-			;
+
 		} else {
 			node.getParent().setRight(EXT);
 		}
@@ -327,6 +328,12 @@ public class AVLTree {
 				root = node.getRight();
 				node.getRight().setParent(null);
 			}
+
+			// Clearing node's pointers, as if it was newly created
+			node.setParent(null);
+			node.setRight(null);
+			node.setLeft(null);
+			return EXT;
 		} else {
 			if (node.getParent().getLeft() == node) {
 				if (node.getLeft().isRealNode()) {
@@ -376,16 +383,23 @@ public class AVLTree {
 		dummy.setLeft(successor.getLeft());
 		dummy.setRight(successor.getRight());
 
-		successor.setParent(node.getParent());
-		successor.setRight(node.getRight());
-		successor.setLeft(node.getLeft());
+		if (root == node) {
+			root = successor;
+			successor.setParent(null);
 
-		if (node.getParent().getLeft() == node) {
-			successor.getParent().setLeft(successor);
 		} else {
-			successor.getParent().setRight(successor);
+			successor.setParent(node.getParent());
+
+			if (node.getParent().getLeft() == node) {
+				successor.getParent().setLeft(successor);
+			} else {
+				successor.getParent().setRight(successor);
+			}
+
 		}
 
+		successor.setRight(node.getRight());
+		successor.setLeft(node.getLeft());
 		successor.getRight().setParent(successor);
 		successor.getLeft().setParent(successor);
 
@@ -440,12 +454,16 @@ public class AVLTree {
 			if (node.getLeft().isRealNode() ^ node.getRight().isRealNode()) {
 				z = deleteUnary(node);
 			} else {
-				// Node is binary, we find successor, switch between them, and
+				// Node is binary, we find successor, switch between them,
+				// and
 				// then delete as unary node
 
 				z = deleteUnary(deleteBinary(node));
 
 			}
+		}
+		if (!z.isRealNode()) {
+			return rebalanceCount;
 		}
 
 		if (z.getHeight() < 1) {
@@ -453,8 +471,9 @@ public class AVLTree {
 					"z is someone's parent, must be at least height 1"));
 		}
 
-		// Rebalance, starting from z, going up the tree until we stop having a
-		// 2,2 node
+		// Rebalance, starting from z, going up the tree until we stop
+		// having a
+		// 2,2 or 3,1 node
 		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
 				- z.getRight().getHeight() == 4)) {
 
@@ -468,6 +487,8 @@ public class AVLTree {
 				}
 				rebalanceCount += 1;
 				z = z.getParent();
+				continue; // Don't continue to check other cases, return to
+							// start of loop
 			}
 
 			// Case 2, as appearing in the presentation
@@ -506,7 +527,8 @@ public class AVLTree {
 				rebalanceCount += 2;// Should this be 2 or 1?
 				rotate(z, z.getRight());
 				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now one of
+				z = z.getParent().getParent(); // Since z's parent is now
+												// one of
 												// his previous children
 			}
 
@@ -518,7 +540,8 @@ public class AVLTree {
 				rebalanceCount += 2;// Should this be 2 or 1?
 				rotate(z, z.getLeft());
 				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now one of
+				z = z.getParent().getParent(); // Since z's parent is now
+												// one of
 												// his previous children
 			}
 
@@ -537,7 +560,8 @@ public class AVLTree {
 				rebalanceCount += 1;
 				rotate(z, z.getRight());
 				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now one of
+				z = z.getParent().getParent(); // Since z's parent is now
+												// one of
 												// his previous children's
 												// children
 			}
@@ -557,7 +581,8 @@ public class AVLTree {
 				rebalanceCount += 1;
 				rotate(z, z.getLeft());
 				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now one of
+				z = z.getParent().getParent(); // Since z's parent is now
+												// one of
 												// his previous children's
 												// children
 			}
@@ -569,6 +594,7 @@ public class AVLTree {
 		if (empty()) {
 			root = EXT;
 		}
+
 		return rebalanceCount;
 
 	}

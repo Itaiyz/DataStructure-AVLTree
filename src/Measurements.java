@@ -56,13 +56,14 @@ public class Measurements {
 	}
 
 	public static void main(String[] args) {
-		int[] problemSequence= {7,3,9,6,1,5,8,2};//and then 4
+		int[] problemSequence= {3,1,9,7,2,0,8,6,4,5};
 		AVLTree t = new AVLTree();
 		for(int i:problemSequence) {
 			t.insert(i, Integer.toString(i));
 		}
-		
-		t.insert(4,"4");
+		for(int j=9;j>=-1;j--) {
+			t.delete(j);
+		}
 		
 		Number[] res = runExperiment(10);
 		for (Number num : res) {
