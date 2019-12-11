@@ -180,28 +180,37 @@ public class AVLTree {
 			return -1;
 		}
 
-		// Insert the node
-		IAVLNode newNode = new AVLNode(k, i);
-		size += 1;
-		newNode.setLeft(EXT);
-		newNode.setRight(EXT);
-		newNode.setParent(insertionPoint);
+		try {
+			// Insert the node
+			IAVLNode newNode = new AVLNode(k, i);
+			size += 1;
+			newNode.setLeft(EXT);
+			newNode.setRight(EXT);
+			newNode.setParent(insertionPoint);
 
-		if (insertionPoint.getKey() > k) {
-			insertionPoint.setLeft(newNode);
-		} else {
-			insertionPoint.setRight(newNode);
+			if (insertionPoint.getKey() > k) {
+				insertionPoint.setLeft(newNode);
+			} else {
+				insertionPoint.setRight(newNode);
+			}
+
+			// The parent is not a leaf, no rebalancing needed
+			if (insertionPoint.getHeight() > 0) {
+
+				return 0;
+			}
+
+			// Implementing rebalancing cases
+			IAVLNode y = newNode;
+			IAVLNode x = insertionPoint;
+
+			return rebalanceInsert(x, y);
 		}
 
-		// The parent is not a leaf, no rebalancing needed
-		if (insertionPoint.getHeight() > 0) {
-			return 0;
+		finally {
+			System.out.println("After inserting " + k);
+			this.print2DUtil(root, 0);
 		}
-
-		// Implementing rebalancing cases
-		IAVLNode y = newNode;
-		IAVLNode x = insertionPoint;
-		return rebalanceInsert(x, y);
 	}
 
 	/**
@@ -220,6 +229,17 @@ public class AVLTree {
 		int rebalanceCount = 0;
 
 		while (x != null) {
+			// If balance is restored, stop
+			if (((x.getHeight() - x.getLeft().getHeight() == 1)
+					&& (x.getHeight() - x.getRight().getHeight() == 1))
+					|| ((x.getHeight() - x.getLeft().getHeight() == 1)
+							&& (x.getHeight() - x.getRight().getHeight() == 2))
+					|| ((x.getHeight() - x.getRight().getHeight() == 1)
+							&& (x.getHeight()
+									- x.getLeft().getHeight() == 2))) {
+				return rebalanceCount;
+			}
+
 			// Case 1 (rank differences are 0,1 and so their sum is 1)
 			if (2 * x.getHeight() - x.getLeft().getHeight()
 					- x.getRight().getHeight() == 1) {
@@ -679,26 +699,24 @@ public class AVLTree {
 		return root;
 	}
 
-	
 	/**
-	 * private void setSubtreeSize(AVLTree t)
-	 * Calculates subtree size in O(#nodes), using nodesToArray
+	 * private void setSubtreeSize(AVLTree t) Calculates subtree size in
+	 * O(#nodes), using nodesToArray
 	 */
 	private void setSubtreeSize(AVLTree t) {
-		IAVLNode[] nodeArray = nodesToArray(t.getRoot(),new IAVLNode[size()], new int[] { 0 });
-		int size=0;
-		for(IAVLNode node:nodeArray) {
-			if(node!=null) {
-				size+=1;
-			}
-			else {
+		IAVLNode[] nodeArray = nodesToArray(t.getRoot(), new IAVLNode[size()],
+				new int[] { 0 });
+		int size = 0;
+		for (IAVLNode node : nodeArray) {
+			if (node != null) {
+				size += 1;
+			} else {
 				break;
 			}
 		}
-		t.size=size;
+		t.size = size;
 	}
-	
-	
+
 	/**
 	 * public string split(int x)
 	 *
@@ -715,7 +733,7 @@ public class AVLTree {
 
 		left.root = node.getLeft();
 		setSubtreeSize(left);
-		
+
 		right.root = node.getRight();
 		setSubtreeSize(right);
 
@@ -746,9 +764,9 @@ public class AVLTree {
 	 * keys() or keys(x,t) > keys() postcondition: none
 	 */
 	public int join(IAVLNode x, AVLTree t) {
-		
-		size=size+t.size()+1;
-		
+
+		size = size + t.size() + 1;
+
 		if (root.getHeight() == t.getRoot().getHeight()) {
 			if (x.getKey() < root.getKey()) {
 				x.setRight(root);

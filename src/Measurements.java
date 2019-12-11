@@ -56,6 +56,14 @@ public class Measurements {
 	}
 
 	public static void main(String[] args) {
+		int[] problemSequence= {7,3,9,6,1,5,8,2};//and then 4
+		AVLTree t = new AVLTree();
+		for(int i:problemSequence) {
+			t.insert(i, Integer.toString(i));
+		}
+		
+		t.insert(4,"4");
+		
 		Number[] res = runExperiment(10);
 		for (Number num : res) {
 			System.out.print(num + " ");
