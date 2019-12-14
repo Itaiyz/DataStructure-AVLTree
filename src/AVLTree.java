@@ -23,6 +23,8 @@ public class AVLTree {
 	 *
 	 * returns true if and only if the tree is empty
 	 *
+	 * Complexity: O(1)
+	 *
 	 */
 	public boolean empty() {
 		return size == 0;
@@ -35,6 +37,9 @@ public class AVLTree {
 	 * otherwise, returns null
 	 * 
 	 * uses private method searchNode(int k)
+	 *
+	 * Complexity: O(log n)
+	 *
 	 */
 	public String search(int k) {
 		if (empty()) {
@@ -54,6 +59,8 @@ public class AVLTree {
 	 * presentation on slide 17.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
 	 * 
+	 * Complexity: O(log n)
+	 *
 	 * @param {int} k - key of node we're searching for.
 	 * @return {IAVLNode} the desired node, with key == k , or the correct
 	 *         insertion point for it if no such node exists in the tree
