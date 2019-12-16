@@ -404,10 +404,20 @@ public class AVLTree {
 
 		}
 
-		successor.setRight(node.getRight());
-		successor.setLeft(node.getLeft());
-		successor.getRight().setParent(successor);
-		successor.getLeft().setParent(successor);
+		if (node.getRight() != successor) {
+			successor.setRight(node.getRight());
+		}
+		if (node.getLeft() != successor) {
+			successor.setLeft(node.getLeft());
+		}
+		if (successor.getRight().isRealNode()) {
+			successor.getRight().setParent(successor);
+		}
+		if (successor.getLeft().isRealNode()) {
+			successor.getLeft().setParent(successor);
+		}
+		successor.setHeight(node.getHeight());
+		successor.setSize(node.getSize());
 
 		if (dummy.getParent().getLeft() == successor) {
 			dummy.getParent().setLeft(dummy);
