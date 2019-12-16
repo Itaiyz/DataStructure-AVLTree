@@ -119,7 +119,10 @@ class AVLTreeTest {
 		System.out.println(tree.insert(1, "1") + ": " + -1);
 		System.out.println(tree.insert(2, "2") + ": " + 0);
 		// RR
-		System.out.println(tree.insert(3, "3") + ": " + 1);
+		// This next line used to say 1, but there are 3 rebalance operations because of
+		// 2 demotes
+		System.out.println(tree.insert(3, "3") + ": " + 3);
+
 		AVLTree.print2DUtil(tree.getRoot(), 0);
 	}
 
