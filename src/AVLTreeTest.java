@@ -14,12 +14,31 @@ class AVLTreeTest {
 	}
 
 	public static void assertEquals(String a, String b) {
-		if (a != b)
+		if (a == null && b == null) {
+			return;
+		}
+		if (a == null) {
+			System.err.println("invalid: " + a + "!=" + b);
+		}
+		if (b == null) {
+			System.err.println("invalid: " + a + "!=" + b);
+		}
+		if (!a.equals(b)) // String equality is not tested with != but rather
+							// with the equals function
 			System.err.println("invalid: " + a + "!=" + b);
 	}
 
 	public static void assertEquals(AVLTree.IAVLNode nd1,
 			AVLTree.IAVLNode nd2) {
+		if (nd1 == null && nd2 == null) {
+			return;
+		}
+		if (nd1 == null) {
+			System.err.println("invalid: " + nd1 + "!=" + nd2);
+		}
+		if (nd2 == null) {
+			System.err.println("invalid: " + nd1 + "!=" + nd2);
+		}
 		if (!nd1.equals(nd2))
 			System.err.println("invalid" + "(" + nd1.getKey() + ", "
 					+ nd1.getValue() + ")" + "!= " + "(" + nd2.getKey() + ", "
@@ -119,7 +138,8 @@ class AVLTreeTest {
 		System.out.println(tree.insert(1, "1") + ": " + -1);
 		System.out.println(tree.insert(2, "2") + ": " + 0);
 		// RR
-		// This next line used to say 1, but there are 3 rebalance operations because of
+		// This next line used to say 1, but there are 3 rebalance operations
+		// because of
 		// 2 demotes
 		System.out.println(tree.insert(3, "3") + ": " + 3);
 
