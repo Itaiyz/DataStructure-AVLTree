@@ -1,8 +1,9 @@
 
 public class AVLSanitizer {
 	public static int calcHeight(AVLTree.IAVLNode node) {
-		if (node == null || !node.isRealNode())
+		if (node == null || !node.isRealNode()) {
 			return -1;
+		}
 		return Math.max(calcHeight(node.getLeft()), calcHeight(node.getRight()))
 				+ 1;
 	}
@@ -13,7 +14,7 @@ public class AVLSanitizer {
 		int sizeLeft = calcSize(node.getLeft());
 		int sizeRight = calcSize(node.getRight());
 		int size = sizeLeft + sizeRight + 1;
-		if (size != node.getHeight()) {
+		if (size != node.getSize()) {
 			assert false;
 		}
 		return size;
@@ -44,7 +45,7 @@ public class AVLSanitizer {
 												// getSize
 		{
 			System.out.format("Size should be %d but is %d%n", calcSize(root),
-					root.getHeight());
+					root.getSize());
 			calcSize(root);
 			return false;
 		}
