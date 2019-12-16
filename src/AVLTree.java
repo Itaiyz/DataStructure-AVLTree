@@ -5,18 +5,41 @@
  * An implementation of a AVL Tree with distinct integer keys and info
  *
  * Submitted by:
- * 
+ *
  * Itai Zemah itaizemah 209637453
  *
  * Oded Carmon odedcarmon 208116517
- * 
+ *
  */
 
 public class AVLTree {
 
-	private int size = 0;
-	private IAVLNode EXT = new AVLNode(); // Shared external leaf
-	private IAVLNode root = EXT;
+	static void print2DUtil(IAVLNode root, int space) {
+		// Base case
+		if (root == null)
+			return;
+
+		// Increase distance between levels
+		space += 10;
+
+		// Process right child first
+		print2DUtil(root.getRight(), space);
+
+		// Print current node after space
+		// count
+		System.out.print("\n");
+		for (int i = 10; i < space; i++)
+			System.out.print(" ");
+		System.out.print(root.getKey() + " " + root.getHeight() + " "
+				+ root.getSize() + "\n");
+
+		// Process left child
+		print2DUtil(root.getLeft(), space);
+	}
+
+	protected int size = 0;
+	protected IAVLNode EXT = new AVLNode(); // Shared external leaf
+	protected IAVLNode root = EXT;
 
 	/**
 	 * public boolean empty()
@@ -36,7 +59,7 @@ public class AVLTree {
 	 * returns the info of an item with key k if it exists in the tree
 	 * otherwise, returns null
 	 * 
-	 * uses private method searchNode(int k)
+	 * uses protected method searchNode(int k)
 	 *
 	 * Complexity: O(log n)
 	 *
@@ -53,8 +76,8 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode searchNode(int k)
-	 * 
+	 * protected IAVLNode searchNode(int k)
+	 *
 	 * Internal method implementing search algorithm seen in class in BST
 	 * presentation on slide 17.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
@@ -65,7 +88,7 @@ public class AVLTree {
 	 * @return {IAVLNode} the desired node, with key == k , or the correct
 	 *         insertion point for it if no such node exists in the tree
 	 */
-	private IAVLNode searchNode(int k) {
+	protected IAVLNode searchNode(int k) {
 		IAVLNode x = root;
 		IAVLNode y = x;
 		while (x.isRealNode()) {
@@ -87,11 +110,11 @@ public class AVLTree {
 	/**
 	 * Performs rotation based on given parent and child nodes (rotates on the
 	 * edge between them). If child.getParent()!=parent does nothing.
-	 * 
+	 *
 	 * Based on diagram seen in class in BST presentation on slide 31.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
 	 */
-	private void rotate(IAVLNode parent, IAVLNode child) {
+	protected void rotate(IAVLNode parent, IAVLNode child) {
 
 		if (child.getParent() != parent) {
 			return;
@@ -110,7 +133,9 @@ public class AVLTree {
 			} else {
 				grandparent.setRight(child);
 			}
-			child.setParent(grandparent);
+			if (child.isRealNode()) {
+				child.setParent(grandparent);
+			}
 		}
 
 		// Perform left or right rotation appropriately
@@ -126,6 +151,12 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(y);
 			}
+
+
+			// Updating sizes
+			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
+
 		} else {
 			IAVLNode x = parent;
 			IAVLNode y = child;
@@ -137,6 +168,11 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(x);
 			}
+
+			// Updating sizes
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
+			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
+
 		}
 
 	}
@@ -178,13 +214,9 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
-		// The parent is not a leaf, no rebalancing needed
-		if (insertionPoint.getHeight() > 0) {
-
-			return 0;
-		}
 
 		// Implementing rebalancing cases
+
 		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
 
@@ -193,22 +225,27 @@ public class AVLTree {
 	}
 
 	/**
-	 * private rebalanceInsert(IAVLNode x)
-	 * 
+	 * protected rebalanceInsert(IAVLNode x)
+	 *
 	 * Performs all rebalancing cases for insertion into AVL tree, as appearing
 	 * in WAVL presentation on slide 22
 	 * https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/WAVL.pptx
 	 *
 	 * Used by insert and join functions
-	 * 
+	 *
 	 * @param y = x's new child
 	 */
-	private int rebalanceInsert(IAVLNode x, IAVLNode y) {
+	protected int rebalanceInsert(IAVLNode x, IAVLNode y) {
 
 		int rebalanceCount = 0;
 
 		while (x != null) {
-			// If balance is restored, stop
+
+
+			x.setSize(x.getSize() + 1);
+
+			// If balance is restored, only go up and update sizes
+
 			if (((x.getHeight() - x.getLeft().getHeight() == 1)
 					&& (x.getHeight() - x.getRight().getHeight() == 1))
 					|| ((x.getHeight() - x.getLeft().getHeight() == 1)
@@ -216,7 +253,10 @@ public class AVLTree {
 					|| ((x.getHeight() - x.getRight().getHeight() == 1)
 							&& (x.getHeight()
 									- x.getLeft().getHeight() == 2))) {
-				return rebalanceCount;
+
+				x = x.getParent();
+				continue;
+
 			}
 
 			// Case 1 (rank differences are 0,1 and so their sum is 1)
@@ -227,6 +267,7 @@ public class AVLTree {
 				rebalanceCount += 1;
 				y = x;
 				x = x.getParent();
+				continue;
 			} else {
 				// Case 2, with both symmetric cases
 				if (((x.getLeft() == y)
@@ -238,8 +279,13 @@ public class AVLTree {
 					rebalanceCount += 1;
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
-
-					return rebalanceCount;
+					if (x.getParent() != null) {
+						x = x.getParent().getParent();// Since x is y's child
+														// now
+					} else {
+						x = null;
+					}
+					continue;
 				}
 				// Case 3
 				IAVLNode b;
@@ -259,7 +305,13 @@ public class AVLTree {
 				b.setHeight(b.getHeight() + 1);
 				rebalanceCount += 1;
 
-				return rebalanceCount;
+				if (x.getParent() != null) {
+					x = x.getParent().getParent();// Since x is y's child
+													// now
+				} else {
+					x = null;
+				}
+				continue;
 
 			}
 
@@ -270,11 +322,13 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode deleteLeaf(IAVLNode node)
+	 * protected IAVLNode deleteLeaf(IAVLNode node)
 	 * 
 	 * deletes the leaf node, returns node.getParent() to start rebalancing
 	 */
-	private IAVLNode deleteLeaf(IAVLNode node) {
+
+	protected IAVLNode deleteLeaf(IAVLNode node) {
+
 		if (root == node) {
 			node.setRight(null);
 			node.setLeft(null);
@@ -291,20 +345,17 @@ public class AVLTree {
 
 		IAVLNode z = node.getParent();
 
-		// Clearing node's pointers, as if it was newly created
-		node.setParent(null);
-		node.setRight(null);
-		node.setLeft(null);
-
 		return z;
 	}
 
 	/**
-	 * private IAVLNode deleteUnary(IAVLNode node)
+	 * protected IAVLNode deleteUnary(IAVLNode node)
 	 * 
 	 * deletes the unary node, returns node.getParent() to start rebalancing
 	 */
-	private IAVLNode deleteUnary(IAVLNode node) {
+
+	protected IAVLNode deleteUnary(IAVLNode node) {
+
 		if (root == node) {
 			if (node.getLeft().isRealNode()) {
 				root = node.getLeft();
@@ -314,17 +365,16 @@ public class AVLTree {
 				node.getRight().setParent(null);
 			}
 
-			// Clearing node's pointers, as if it was newly created
-			node.setParent(null);
-			node.setRight(null);
-			node.setLeft(null);
+
 			return EXT;
 		} else {
 			if (node.getParent().getLeft() == node) {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setLeft(node.getLeft());
 					node.getLeft().setParent(node.getParent());
-				} else {
+
+				} else if (node.getRight().isRealNode()) {
+
 					node.getParent().setLeft(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
@@ -332,7 +382,9 @@ public class AVLTree {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setRight(node.getLeft());
 					node.getLeft().setParent(node.getParent());
-				} else {
+
+				} else if (node.getRight().isRealNode()) {
+
 					node.getParent().setRight(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
@@ -340,67 +392,97 @@ public class AVLTree {
 		}
 		IAVLNode z = node.getParent();
 
-		// Clearing node's pointers, as if it was newly created
-		node.setParent(null);
-		node.setRight(null);
-		node.setLeft(null);
-
 		return z;
 	}
 
 	/**
-	 * private IAVLNode deleteBinary(IAVLNode node)
+	 * protected IAVLNode successor(IAVLNode node)
 	 * 
-	 * deletes the binary node, returns a pointer to a dummy node replacing
-	 * node's successor in the tree for unary deletion
+	 * finds successor of node
 	 */
-	private IAVLNode deleteBinary(IAVLNode node) {
+	protected IAVLNode getSuccessor(IAVLNode node) {
 		IAVLNode successor = node.getRight();
 		IAVLNode dummy = successor.getLeft();
-
 		while (dummy.isRealNode()) {
 			successor = dummy;
 			dummy = dummy.getLeft();
 		}
+		return successor;
+	}
 
-		dummy = new AVLNode();
-		dummy.setParent(successor.getParent());
-		dummy.setLeft(successor.getLeft());
-		dummy.setRight(successor.getRight());
+	/**
+	 * protected IAVLNode deleteBinary(IAVLNode node)
+	 * 
+	 * deletes the binary node, returns a pointer to a dummy node replacing
+	 * node's successor in the tree for unary deletion
+	 */
+	protected IAVLNode deleteBinary(IAVLNode node) {
+
+		IAVLNode successor = getSuccessor(node);
+
+		IAVLNode temp = new AVLNode();
+		if (successor.getParent() == node) {
+			temp.setParent(successor);
+		} else {
+			temp.setParent(successor.getParent());
+		}
+		temp.setLeft(successor.getLeft());
+		temp.setRight(successor.getRight());
+		temp.setHeight(successor.getHeight());
+		temp.setSize(successor.getSize());
+
+
+		successor.setParent(node.getParent());
+		successor.setLeft(node.getLeft());
+		if (node.getRight() == successor) {
+			successor.setRight(node);
+		} else {
+			successor.setRight(node.getRight());
+			if(node.getRight().isRealNode()) {
+				node.getRight().setParent(successor);
+			}
+		}
+
+		successor.setHeight(node.getHeight());
+		successor.setSize(node.getSize());
 
 		if (root == node) {
 			root = successor;
-			successor.setParent(null);
+
 
 		} else {
-			successor.setParent(node.getParent());
 
 			if (node.getParent().getLeft() == node) {
-				successor.getParent().setLeft(successor);
+				node.getParent().setLeft(successor);
 			} else {
-				successor.getParent().setRight(successor);
+				node.getParent().setRight(successor);
 			}
 
 		}
+		if(node.getLeft().isRealNode()) {
+			node.getLeft().setParent(successor);
+		}
+		
+		node.setParent(temp.getParent());
+		node.setLeft(temp.getLeft());
+		node.setRight(temp.getRight());
+		node.setHeight(temp.getHeight());
+		node.setSize(temp.getSize());
 
-		successor.setRight(node.getRight());
-		successor.setLeft(node.getLeft());
-		successor.getRight().setParent(successor);
-		successor.getLeft().setParent(successor);
+		if (temp.getRight().isRealNode()) {
+			temp.getRight().setParent(node);
+		}
+		if (temp.getLeft().isRealNode()) {
+			temp.getLeft().setParent(node);
+		}
 
-		if (dummy.getParent().getLeft() == successor) {
-			dummy.getParent().setLeft(dummy);
+		if (temp.getParent().getLeft() == successor) {
+			temp.getParent().setLeft(node);
 		} else {
-			dummy.getParent().setRight(dummy);
+			temp.getParent().setRight(node);
 		}
 
-		// Only need to set right child's parent since the other is
-		// definitely virtual
-		if (dummy.getRight().isRealNode()) {
-			dummy.getRight().setParent(dummy);
-		}
-
-		return dummy;
+		return node;
 	}
 
 	/**
@@ -442,14 +524,21 @@ public class AVLTree {
 				// Node is binary, we find successor, switch between them,
 				// and
 				// then delete as unary node
-
-				z = deleteUnary(deleteBinary(node));
+				z = deleteBinary(node);
+				//print2DUtil(root, 0);
+				if (z.getLeft().isRealNode() ^ z.getRight().isRealNode()) {
+					z = deleteUnary(z);
+				} else {// z is leaf
+					z = deleteLeaf(z);
+				}
+				//print2DUtil(root, 0);
 
 			}
 		}
 		if (!z.isRealNode()) {
 			return rebalanceCount;
 		}
+
 
 		if (z.getHeight() < 1) {
 			throw (new RuntimeException(
@@ -459,123 +548,146 @@ public class AVLTree {
 		// Rebalance, starting from z, going up the tree until we stop
 		// having a
 		// 2,2 or 3,1 node
-		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
-				- z.getRight().getHeight() == 4)) {
+		while ((z != null)) {
+			z.setSize(z.getSize() - 1);
+			if (2 * z.getHeight() - z.getLeft().getHeight()
+					- z.getRight().getHeight() == 4) {
 
-			// Case 1
-			if ((z.getHeight() - z.getLeft().getHeight() == 2)
-					&& (z.getHeight() - z.getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				if (z.getHeight() < 0) {
-					throw (new RuntimeException(
-							"internal node height cannot drop below 0"));
+				// Case 1
+				if ((z.getHeight() - z.getLeft().getHeight() == 2)
+						&& (z.getHeight() - z.getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					if (z.getHeight() < 0) {
+						throw (new RuntimeException(
+								"internal node height cannot drop below 0"));
+					}
+					rebalanceCount += 1;
+					z = z.getParent();
+					continue; // Don't continue to check other cases, return to
+								// start of loop
 				}
-				rebalanceCount += 1;
-				z = z.getParent();
-				continue; // Don't continue to check other cases, return to
-							// start of loop
-			}
 
-			// Case 2, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (2 * z.getRight().getHeight()
-							- z.getRight().getRight().getHeight()
-							- z.getRight().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				rebalanceCount += 1;
-				z.getRight().setHeight(z.getRight().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				break;
-			}
 
-			// Case 2, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (2 * z.getLeft().getHeight()
-							- z.getLeft().getRight().getHeight()
-							- z.getLeft().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				rebalanceCount += 1;
-				z.getLeft().setHeight(z.getLeft().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				break;
-			}
+				// Case 2, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (2 * z.getRight().getHeight()
+								- z.getRight().getRight().getHeight()
+								- z.getRight().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					rebalanceCount += 1;
+					z.getRight().setHeight(z.getRight().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
+					continue;
+				}
 
-			// Case 3, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (z.getRight().getHeight()
-							- z.getRight().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children
-				continue;
-			}
+				// Case 2, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (2 * z.getLeft().getHeight()
+								- z.getLeft().getRight().getHeight()
+								- z.getLeft().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					rebalanceCount += 1;
+					z.getLeft().setHeight(z.getLeft().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
+					continue;
+				}
 
-			// Case 3, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (z.getLeft().getHeight()
-							- z.getLeft().getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children
-				continue;
-			}
 
-			// Case 4, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (z.getRight().getHeight()
-							- z.getRight().getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				z.getRight().setHeight(z.getRight().getHeight() - 1);
-				rebalanceCount += 1;
-				z.getRight().getLeft()
-						.setHeight(z.getRight().getLeft().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z.getRight(), z.getRight().getLeft());
-				rebalanceCount += 1;
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children's
-												// children
-				continue;
-			}
+				// Case 3, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (z.getRight().getHeight()
+								- z.getRight().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					} // Since z's parent is now one of his previous children
+					continue;
+				}
 
-			// Case 4, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (z.getLeft().getHeight()
-							- z.getLeft().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				z.getLeft().setHeight(z.getLeft().getHeight() - 1);
-				rebalanceCount += 1;
-				z.getLeft().getRight()
-						.setHeight(z.getLeft().getRight().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z.getLeft(), z.getLeft().getRight());
-				rebalanceCount += 1;
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children's
-												// children
-				continue;
-			}
+				// Case 3, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (z.getLeft().getHeight()
+								- z.getLeft().getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
+					continue;
+				}
 
+				// Case 4, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (z.getRight().getHeight()
+								- z.getRight().getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					z.getRight().setHeight(z.getRight().getHeight() - 1);
+					rebalanceCount += 1;
+					z.getRight().getLeft()
+							.setHeight(z.getRight().getLeft().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z.getRight(), z.getRight().getLeft());
+					rebalanceCount += 1;
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
+					continue;
+				}
+
+				// Case 4, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (z.getLeft().getHeight()
+								- z.getLeft().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					z.getLeft().setHeight(z.getLeft().getHeight() - 1);
+					rebalanceCount += 1;
+					z.getLeft().getRight()
+							.setHeight(z.getLeft().getRight().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z.getLeft(), z.getLeft().getRight());
+					rebalanceCount += 1;
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
+					continue;
+				}
+
+
+			}
+			z = z.getParent();
 		}
 
 		// If deleted last node, put virtual node as root, like when
@@ -631,7 +743,7 @@ public class AVLTree {
 	 * nodes in the tree, sorted by their respective keys, or an empty array if
 	 * the tree is empty.
 	 */
-	private IAVLNode[] nodesToArray() {
+	protected IAVLNode[] nodesToArray() {
 		return nodesToArray(root, new IAVLNode[size()], new int[] { 0 });
 	}
 
@@ -640,11 +752,11 @@ public class AVLTree {
 	 * array of the proper size, each function call returns a pointer to the
 	 * array up the call tree, which will eventually be returned to the
 	 * non-recursive version of the function.
-	 * 
+	 *
 	 * The array i holds a single integer which signifies what is the next index
 	 * in the node array to be filled.
 	 */
-	private IAVLNode[] nodesToArray(IAVLNode node, IAVLNode[] arr, int[] i) {
+	protected IAVLNode[] nodesToArray(IAVLNode node, IAVLNode[] arr, int[] i) {
 		if (node.isRealNode()) {
 
 			nodesToArray(node.getLeft(), arr, i);
@@ -747,21 +859,24 @@ public class AVLTree {
 		AVLTree t;
 
 		left.root = node.getLeft();
-		setSubtreeSize(left);
 
+		left.size = left.root.getSize();
 		right.root = node.getRight();
-		setSubtreeSize(right);
+		right.size = right.root.getSize();
+
 
 		IAVLNode p = node.getParent();
 		while (p != null) {
 			t = new AVLTree();
 			if (p.getRight() == node) {
 				t.root = p.getLeft();
-				setSubtreeSize(t);
+
+				t.size = t.root.getSize();
 				left.join(p, t);
 			} else {
 				t.root = p.getRight();
-				setSubtreeSize(t);
+				t.size = t.root.getSize();
+
 				right.join(p, t);
 			}
 			node = p;
@@ -854,7 +969,7 @@ public class AVLTree {
 		public int getKey(); // returns node's key (for virtuval node return -1)
 
 		public String getValue(); // returns node's value [info] (for virtuval
-									// node return null)
+		// node return null)
 
 		public void setLeft(IAVLNode node); // sets left child
 
@@ -879,6 +994,11 @@ public class AVLTree {
 		public int getHeight(); // Returns the height of the node (-1 for
 								// virtual nodes)
 
+		public int getSize(); // Return the size of subtree containing this node
+
+		public void setSize(int size); // sets the size of subtree containing
+										// this node
+
 	}
 
 	/**
@@ -890,17 +1010,18 @@ public class AVLTree {
 	 */
 	public class AVLNode implements IAVLNode {
 
-		private int key;
-		private String value;
-		private IAVLNode left;
-		private IAVLNode right;
-		private IAVLNode parent;
-		private boolean realNode;
-		private int height;
+		protected int key;
+		protected String value;
+		protected IAVLNode left;
+		protected IAVLNode right;
+		protected IAVLNode parent;
+		protected boolean realNode;
+		protected int height;
+		protected int size;
 
 		/**
 		 * public AVLNode(int key, String value)
-		 * 
+		 *
 		 * Constructor for real node, with all relevant information passed as
 		 * arguments
 		 */
@@ -912,12 +1033,13 @@ public class AVLTree {
 			parent = null;
 			realNode = true;
 			height = 0;
+			size = 1;
 
 		}
 
 		/**
 		 * public AVLNode()
-		 * 
+		 *
 		 * Constructor for virtual node, doesn't require any additional
 		 * information
 		 */
@@ -929,7 +1051,7 @@ public class AVLTree {
 			parent = null;
 			realNode = false;
 			height = -1;
-
+			size = 0;
 		}
 
 		public int getKey() {
@@ -975,6 +1097,16 @@ public class AVLTree {
 
 		public int getHeight() {
 			return height;
+		}
+
+		@Override
+		public int getSize() {
+			return size;
+		}
+
+		@Override
+		public void setSize(int size) {
+			this.size = size;
 		}
 
 	}
