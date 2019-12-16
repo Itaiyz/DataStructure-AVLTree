@@ -469,123 +469,129 @@ public class AVLTree {
 		// Rebalance, starting from z, going up the tree until we stop
 		// having a
 		// 2,2 or 3,1 node
-		while ((z != null) && (2 * z.getHeight() - z.getLeft().getHeight()
-				- z.getRight().getHeight() == 4)) {
+		while ((z != null)) {
+			z.setSize(z.getSize() - 1);
+			if (2 * z.getHeight() - z.getLeft().getHeight()
+					- z.getRight().getHeight() == 4) {
 
-			// Case 1
-			if ((z.getHeight() - z.getLeft().getHeight() == 2)
-					&& (z.getHeight() - z.getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				if (z.getHeight() < 0) {
-					throw (new RuntimeException(
-							"internal node height cannot drop below 0"));
+				// Case 1
+				if ((z.getHeight() - z.getLeft().getHeight() == 2)
+						&& (z.getHeight() - z.getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					if (z.getHeight() < 0) {
+						throw (new RuntimeException(
+								"internal node height cannot drop below 0"));
+					}
+					rebalanceCount += 1;
+					z = z.getParent();
+					continue; // Don't continue to check other cases, return to
+								// start of loop
 				}
-				rebalanceCount += 1;
-				z = z.getParent();
-				continue; // Don't continue to check other cases, return to
-							// start of loop
-			}
 
-			// Case 2, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (2 * z.getRight().getHeight()
-							- z.getRight().getRight().getHeight()
-							- z.getRight().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				rebalanceCount += 1;
-				z.getRight().setHeight(z.getRight().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				break;
-			}
+				// Case 2, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (2 * z.getRight().getHeight()
+								- z.getRight().getRight().getHeight()
+								- z.getRight().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					rebalanceCount += 1;
+					z.getRight().setHeight(z.getRight().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					z = z.getParent().getParent();
+					continue;
+				}
 
-			// Case 2, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (2 * z.getLeft().getHeight()
-							- z.getLeft().getRight().getHeight()
-							- z.getLeft().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 1);
-				rebalanceCount += 1;
-				z.getLeft().setHeight(z.getLeft().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				break;
-			}
+				// Case 2, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (2 * z.getLeft().getHeight()
+								- z.getLeft().getRight().getHeight()
+								- z.getLeft().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 1);
+					rebalanceCount += 1;
+					z.getLeft().setHeight(z.getLeft().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					z = z.getParent().getParent();
+					continue;
+				}
 
-			// Case 3, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (z.getRight().getHeight()
-							- z.getRight().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children
-				continue;
-			}
+				// Case 3, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (z.getRight().getHeight()
+								- z.getRight().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					z = z.getParent().getParent(); // Since z's parent is now
+													// one of
+													// his previous children
+					continue;
+				}
 
-			// Case 3, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (z.getLeft().getHeight()
-							- z.getLeft().getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children
-				continue;
-			}
+				// Case 3, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (z.getLeft().getHeight()
+								- z.getLeft().getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					z = z.getParent().getParent(); // Since z's parent is now
+													// one of
+													// his previous children
+					continue;
+				}
 
-			// Case 4, as appearing in the presentation
-			if ((z.getHeight() - z.getLeft().getHeight() == 3)
-					&& (z.getRight().getHeight()
-							- z.getRight().getRight().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				z.getRight().setHeight(z.getRight().getHeight() - 1);
-				rebalanceCount += 1;
-				z.getRight().getLeft()
-						.setHeight(z.getRight().getLeft().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z.getRight(), z.getRight().getLeft());
-				rebalanceCount += 1;
-				rotate(z, z.getRight());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children's
-												// children
-				continue;
-			}
+				// Case 4, as appearing in the presentation
+				if ((z.getHeight() - z.getLeft().getHeight() == 3)
+						&& (z.getRight().getHeight()
+								- z.getRight().getRight().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					z.getRight().setHeight(z.getRight().getHeight() - 1);
+					rebalanceCount += 1;
+					z.getRight().getLeft()
+							.setHeight(z.getRight().getLeft().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z.getRight(), z.getRight().getLeft());
+					rebalanceCount += 1;
+					rotate(z, z.getRight());
+					rebalanceCount += 1;
+					z = z.getParent().getParent(); // Since z's parent is now
+													// one of
+													// his previous children's
+													// children
+					continue;
+				}
 
-			// Case 4, mirror image
-			if ((z.getHeight() - z.getRight().getHeight() == 3)
-					&& (z.getLeft().getHeight()
-							- z.getLeft().getLeft().getHeight() == 2)) {
-				z.setHeight(z.getHeight() - 2);
-				rebalanceCount += 2;// Should this be 2 or 1?
-				z.getLeft().setHeight(z.getLeft().getHeight() - 1);
-				rebalanceCount += 1;
-				z.getLeft().getRight()
-						.setHeight(z.getLeft().getRight().getHeight() + 1);
-				rebalanceCount += 1;
-				rotate(z.getLeft(), z.getLeft().getRight());
-				rebalanceCount += 1;
-				rotate(z, z.getLeft());
-				rebalanceCount += 1;
-				z = z.getParent().getParent(); // Since z's parent is now
-												// one of
-												// his previous children's
-												// children
-				continue;
-			}
+				// Case 4, mirror image
+				if ((z.getHeight() - z.getRight().getHeight() == 3)
+						&& (z.getLeft().getHeight()
+								- z.getLeft().getLeft().getHeight() == 2)) {
+					z.setHeight(z.getHeight() - 2);
+					rebalanceCount += 2;// Should this be 2 or 1?
+					z.getLeft().setHeight(z.getLeft().getHeight() - 1);
+					rebalanceCount += 1;
+					z.getLeft().getRight()
+							.setHeight(z.getLeft().getRight().getHeight() + 1);
+					rebalanceCount += 1;
+					rotate(z.getLeft(), z.getLeft().getRight());
+					rebalanceCount += 1;
+					rotate(z, z.getLeft());
+					rebalanceCount += 1;
+					z = z.getParent().getParent(); // Since z's parent is now
+													// one of
+													// his previous children's
+													// children
+					continue;
+				}
 
+			}
+			z = z.getParent();
 		}
 
 		// If deleted last node, put virtual node as root, like when
