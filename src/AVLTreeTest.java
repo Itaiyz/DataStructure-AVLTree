@@ -145,7 +145,7 @@ class AVLTreeTest {
 									// requirements as explained in forum should
 									// expect 3 since we perform 1 rotation and
 									// demote twice
-			System.err.println("wrong output in delete: tree.delete(1)!=1");
+			System.err.println("wrong output in delete: tree.delete(1)!=3");
 
 		assertTrue(AVLSanitizer.sanitizeTree(tree));
 
