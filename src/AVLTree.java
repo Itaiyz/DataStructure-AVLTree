@@ -315,12 +315,6 @@ public class AVLTree {
 
 		IAVLNode z = node.getParent();
 
-		// Travel up and update sizes
-		while (node.getParent() != null) {
-			node = node.getParent();
-			node.setSize(node.getSize() - 1);
-		}
-
 		return z;
 	}
 
@@ -339,10 +333,6 @@ public class AVLTree {
 				node.getRight().setParent(null);
 			}
 
-			// Clearing node's pointers, as if it was newly created
-			node.setParent(null);
-			node.setRight(null);
-			node.setLeft(null);
 			return EXT;
 		} else {
 			if (node.getParent().getLeft() == node) {
@@ -364,12 +354,6 @@ public class AVLTree {
 			}
 		}
 		IAVLNode z = node.getParent();
-
-		// Travel up and update sizes
-		while (node.getParent() != null) {
-			node = node.getParent();
-			node.setSize(node.getSize() - 1);
-		}
 
 		return z;
 	}
