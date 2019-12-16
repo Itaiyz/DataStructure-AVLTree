@@ -306,10 +306,28 @@ class AVLTreeTest {
 
 	public static void main(String[] args) {
 
+		AVLTree tree = arrayToTree(
+				new int[] { 68, 6, 91, 65, 73, 25, 8, 24, 8, 39 });
+		//AVLTree.print2DUtil(tree.getRoot(), 0);
+
+		for (int x : new int[] { 25, 6, 91, 24, 8, 8, 39, 68, 65, 73 }) {
+			
+			System.out.format("deleting %d%n", x);
+			tree.delete(x);
+			
+			//AVLTree.print2DUtil(tree.getRoot(), 0);
+			assertTrue(AVLSanitizer.sanitizeTree(tree));
+		}
+		
+		
 		testEmpty();
 		testSearch();
 		testInsert();
-		testDelete();
+
+		
+		for (int i = 0; i < 10; i++) {
+			testDelete();
+		}
 		testMinMax();
 		testSize();
 		testGetRoot();
