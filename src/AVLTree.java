@@ -30,15 +30,16 @@ public class AVLTree {
 		System.out.print("\n");
 		for (int i = 10; i < space; i++)
 			System.out.print(" ");
-		System.out.print(root.getKey() + "\n");
+		System.out.print(root.getKey() + " " + root.getHeight() + " "
+				+ root.getSize() + "\n");
 
 		// Process left child
 		print2DUtil(root.getLeft(), space);
 	}
 
-	private int size = 0;
-	private IAVLNode EXT = new AVLNode(); // Shared external leaf
-	private IAVLNode root = EXT;
+	protected int size = 0;
+	protected IAVLNode EXT = new AVLNode(); // Shared external leaf
+	protected IAVLNode root = EXT;
 
 	/**
 	 * public boolean empty()
