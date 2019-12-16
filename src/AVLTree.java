@@ -57,7 +57,7 @@ public class AVLTree {
 	 * returns the info of an item with key k if it exists in the tree
 	 * otherwise, returns null
 	 *
-	 * uses private method searchNode(int k)
+	 * uses protected method searchNode(int k)
 	 */
 	public String search(int k) {
 		if (empty()) {
@@ -71,7 +71,7 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode searchNode(int k)
+	 * protected IAVLNode searchNode(int k)
 	 *
 	 * Internal method implementing search algorithm seen in class in BST
 	 * presentation on slide 17.
@@ -81,7 +81,7 @@ public class AVLTree {
 	 * @return {IAVLNode} the desired node, with key == k , or the correct
 	 *         insertion point for it if no such node exists in the tree
 	 */
-	private IAVLNode searchNode(int k) {
+	protected IAVLNode searchNode(int k) {
 		IAVLNode x = root;
 		IAVLNode y = x;
 		while (x.isRealNode()) {
@@ -107,7 +107,7 @@ public class AVLTree {
 	 * Based on diagram seen in class in BST presentation on slide 31.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
 	 */
-	private void rotate(IAVLNode parent, IAVLNode child) {
+	protected void rotate(IAVLNode parent, IAVLNode child) {
 
 		if (child.getParent() != parent) {
 			return;
@@ -201,7 +201,6 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
-		
 		// Implementing rebalancing cases
 
 		IAVLNode y = newNode;
@@ -211,7 +210,7 @@ public class AVLTree {
 	}
 
 	/**
-	 * private rebalanceInsert(IAVLNode x)
+	 * protected rebalanceInsert(IAVLNode x)
 	 *
 	 * Performs all rebalancing cases for insertion into AVL tree, as appearing
 	 * in WAVL presentation on slide 22
@@ -221,7 +220,7 @@ public class AVLTree {
 	 *
 	 * @param y = x's new child
 	 */
-	private int rebalanceInsert(IAVLNode x, IAVLNode y) {
+	protected int rebalanceInsert(IAVLNode x, IAVLNode y) {
 
 		int rebalanceCount = 0;
 
@@ -295,11 +294,11 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode deleteLeaf(IAVLNode node)
+	 * protected IAVLNode deleteLeaf(IAVLNode node)
 	 * 
 	 * deletes the leaf node, returns node.getParent() to start rebalancing
 	 */
-	private IAVLNode deleteLeaf(IAVLNode node) {
+	protected IAVLNode deleteLeaf(IAVLNode node) {
 		if (root == node) {
 			node.setRight(null);
 			node.setLeft(null);
@@ -320,11 +319,11 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode deleteUnary(IAVLNode node)
+	 * protected IAVLNode deleteUnary(IAVLNode node)
 	 * 
 	 * deletes the unary node, returns node.getParent() to start rebalancing
 	 */
-	private IAVLNode deleteUnary(IAVLNode node) {
+	protected IAVLNode deleteUnary(IAVLNode node) {
 		if (root == node) {
 			if (node.getLeft().isRealNode()) {
 				root = node.getLeft();
@@ -360,12 +359,12 @@ public class AVLTree {
 	}
 
 	/**
-	 * private IAVLNode deleteBinary(IAVLNode node)
+	 * protected IAVLNode deleteBinary(IAVLNode node)
 	 * 
 	 * deletes the binary node, returns a pointer to a dummy node replacing
 	 * node's successor in the tree for unary deletion
 	 */
-	private IAVLNode deleteBinary(IAVLNode node) {
+	protected IAVLNode deleteBinary(IAVLNode node) {
 		IAVLNode successor = node.getRight();
 		IAVLNode dummy = successor.getLeft();
 
@@ -648,7 +647,7 @@ public class AVLTree {
 	 * nodes in the tree, sorted by their respective keys, or an empty array if
 	 * the tree is empty.
 	 */
-	private IAVLNode[] nodesToArray() {
+	protected IAVLNode[] nodesToArray() {
 		return nodesToArray(root, new IAVLNode[size()], new int[] { 0 });
 	}
 
@@ -661,7 +660,7 @@ public class AVLTree {
 	 * The array i holds a single integer which signifies what is the next index
 	 * in the node array to be filled.
 	 */
-	private IAVLNode[] nodesToArray(IAVLNode node, IAVLNode[] arr, int[] i) {
+	protected IAVLNode[] nodesToArray(IAVLNode node, IAVLNode[] arr, int[] i) {
 		if (node.isRealNode()) {
 
 			nodesToArray(node.getLeft(), arr, i);
@@ -893,14 +892,14 @@ public class AVLTree {
 	 */
 	public class AVLNode implements IAVLNode {
 
-		private int key;
-		private String value;
-		private IAVLNode left;
-		private IAVLNode right;
-		private IAVLNode parent;
-		private boolean realNode;
-		private int height;
-		private int size;
+		protected int key;
+		protected String value;
+		protected IAVLNode left;
+		protected IAVLNode right;
+		protected IAVLNode parent;
+		protected boolean realNode;
+		protected int height;
+		protected int size;
 
 		/**
 		 * public AVLNode(int key, String value)
