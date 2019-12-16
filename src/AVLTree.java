@@ -46,6 +46,8 @@ public class AVLTree {
 	 *
 	 * returns true if and only if the tree is empty
 	 *
+	 * Complexity: O(1)
+	 *
 	 */
 	public boolean empty() {
 		return size == 0;
@@ -56,8 +58,11 @@ public class AVLTree {
 	 *
 	 * returns the info of an item with key k if it exists in the tree
 	 * otherwise, returns null
-	 *
+	 * 
 	 * uses protected method searchNode(int k)
+	 *
+	 * Complexity: O(log n)
+	 *
 	 */
 	public String search(int k) {
 		if (empty()) {
@@ -76,6 +81,8 @@ public class AVLTree {
 	 * Internal method implementing search algorithm seen in class in BST
 	 * presentation on slide 17.
 	 * (https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/BST.pptx)
+	 * 
+	 * Complexity: O(log n)
 	 *
 	 * @param {int} k - key of node we're searching for.
 	 * @return {IAVLNode} the desired node, with key == k , or the correct
@@ -145,9 +152,11 @@ public class AVLTree {
 				B.setParent(y);
 			}
 
+
 			// Updating sizes
 			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
 			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
+
 		} else {
 			IAVLNode x = parent;
 			IAVLNode y = child;
@@ -159,9 +168,11 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(x);
 			}
+
 			// Updating sizes
 			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
+
 		}
 
 	}
@@ -203,10 +214,12 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
+
 		// Implementing rebalancing cases
 
 		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
+
 		return rebalanceInsert(x, y);
 
 	}
@@ -228,9 +241,11 @@ public class AVLTree {
 
 		while (x != null) {
 
+
 			x.setSize(x.getSize() + 1);
 
 			// If balance is restored, only go up and update sizes
+
 			if (((x.getHeight() - x.getLeft().getHeight() == 1)
 					&& (x.getHeight() - x.getRight().getHeight() == 1))
 					|| ((x.getHeight() - x.getLeft().getHeight() == 1)
@@ -238,8 +253,10 @@ public class AVLTree {
 					|| ((x.getHeight() - x.getRight().getHeight() == 1)
 							&& (x.getHeight()
 									- x.getLeft().getHeight() == 2))) {
+
 				x = x.getParent();
 				continue;
+
 			}
 
 			// Case 1 (rank differences are 0,1 and so their sum is 1)
@@ -309,7 +326,9 @@ public class AVLTree {
 	 * 
 	 * deletes the leaf node, returns node.getParent() to start rebalancing
 	 */
+
 	protected IAVLNode deleteLeaf(IAVLNode node) {
+
 		if (root == node) {
 			node.setRight(null);
 			node.setLeft(null);
@@ -334,7 +353,9 @@ public class AVLTree {
 	 * 
 	 * deletes the unary node, returns node.getParent() to start rebalancing
 	 */
+
 	protected IAVLNode deleteUnary(IAVLNode node) {
+
 		if (root == node) {
 			if (node.getLeft().isRealNode()) {
 				root = node.getLeft();
@@ -344,13 +365,16 @@ public class AVLTree {
 				node.getRight().setParent(null);
 			}
 
+
 			return EXT;
 		} else {
 			if (node.getParent().getLeft() == node) {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setLeft(node.getLeft());
 					node.getLeft().setParent(node.getParent());
+
 				} else if (node.getRight().isRealNode()) {
+
 					node.getParent().setLeft(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
@@ -358,7 +382,9 @@ public class AVLTree {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setRight(node.getLeft());
 					node.getLeft().setParent(node.getParent());
+
 				} else if (node.getRight().isRealNode()) {
+
 					node.getParent().setRight(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
@@ -405,6 +431,7 @@ public class AVLTree {
 		temp.setHeight(successor.getHeight());
 		temp.setSize(successor.getSize());
 
+
 		successor.setParent(node.getParent());
 		successor.setLeft(node.getLeft());
 		if (node.getRight() == successor) {
@@ -421,6 +448,7 @@ public class AVLTree {
 
 		if (root == node) {
 			root = successor;
+
 
 		} else {
 
@@ -511,6 +539,7 @@ public class AVLTree {
 			return rebalanceCount;
 		}
 
+
 		if (z.getHeight() < 1) {
 			throw (new RuntimeException(
 					"z is someone's parent, must be at least height 1"));
@@ -537,6 +566,7 @@ public class AVLTree {
 					continue; // Don't continue to check other cases, return to
 								// start of loop
 				}
+
 
 				// Case 2, as appearing in the presentation
 				if ((z.getHeight() - z.getLeft().getHeight() == 3)
@@ -575,6 +605,7 @@ public class AVLTree {
 					}
 					continue;
 				}
+
 
 				// Case 3, as appearing in the presentation
 				if ((z.getHeight() - z.getLeft().getHeight() == 3)
@@ -653,6 +684,7 @@ public class AVLTree {
 					}
 					continue;
 				}
+
 
 			}
 			z = z.getParent();
@@ -795,6 +827,24 @@ public class AVLTree {
 	}
 
 	/**
+	 * private void setSubtreeSize(AVLTree t) Calculates subtree size in
+	 * O(#nodes), using nodesToArray
+	 */
+	private void setSubtreeSize(AVLTree t) {
+		IAVLNode[] nodeArray = nodesToArray(t.getRoot(), new IAVLNode[size()],
+				new int[] { 0 });
+		int size = 0;
+		for (IAVLNode node : nodeArray) {
+			if (node != null) {
+				size += 1;
+			} else {
+				break;
+			}
+		}
+		t.size = size;
+	}
+
+	/**
 	 * public string split(int x)
 	 *
 	 * splits the tree into 2 trees according to the key x. Returns an array
@@ -809,20 +859,24 @@ public class AVLTree {
 		AVLTree t;
 
 		left.root = node.getLeft();
+
 		left.size = left.root.getSize();
 		right.root = node.getRight();
 		right.size = right.root.getSize();
+
 
 		IAVLNode p = node.getParent();
 		while (p != null) {
 			t = new AVLTree();
 			if (p.getRight() == node) {
 				t.root = p.getLeft();
+
 				t.size = t.root.getSize();
 				left.join(p, t);
 			} else {
 				t.root = p.getRight();
 				t.size = t.root.getSize();
+
 				right.join(p, t);
 			}
 			node = p;
