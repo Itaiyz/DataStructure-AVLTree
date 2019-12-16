@@ -473,8 +473,14 @@ public class AVLTree {
 				// Node is binary, we find successor, switch between them,
 				// and
 				// then delete as unary node
-
-				z = deleteUnary(deleteBinary(node));
+				z = deleteBinary(node);
+				//print2DUtil(root, 0);
+				if (z.getLeft().isRealNode() ^ z.getRight().isRealNode()) {
+					z = deleteUnary(z);
+				} else {// z is leaf
+					z = deleteLeaf(z);
+				}
+				//print2DUtil(root, 0);
 
 			}
 		}
