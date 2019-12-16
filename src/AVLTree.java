@@ -141,6 +141,10 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(y);
 			}
+
+			// Updating sizes
+			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 		} else {
 			IAVLNode x = parent;
 			IAVLNode y = child;
@@ -152,6 +156,9 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(x);
 			}
+			// Updating sizes
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
+			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
 		}
 
 	}
