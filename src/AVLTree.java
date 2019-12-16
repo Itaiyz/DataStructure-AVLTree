@@ -225,8 +225,8 @@ public class AVLTree {
 		int rebalanceCount = 0;
 
 		while (x != null) {
-			
-			x.setSize(x.getSize()+1);
+
+			x.setSize(x.getSize() + 1);
 
 			// If balance is restored, only go up and update sizes
 			if (((x.getHeight() - x.getLeft().getHeight() == 1)
@@ -236,7 +236,7 @@ public class AVLTree {
 					|| ((x.getHeight() - x.getRight().getHeight() == 1)
 							&& (x.getHeight()
 									- x.getLeft().getHeight() == 2))) {
-				x=x.getParent();
+				x = x.getParent();
 				continue;
 			}
 
@@ -261,7 +261,7 @@ public class AVLTree {
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
 
-					x=x.getParent();
+					x = x.getParent().getParent();// Since x is y's child now
 					continue;
 				}
 				// Case 3
@@ -282,7 +282,7 @@ public class AVLTree {
 				b.setHeight(b.getHeight() + 1);
 				rebalanceCount += 1;
 
-				x=x.getParent();
+				x = x.getParent().getParent();
 				continue;
 
 			}
