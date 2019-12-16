@@ -208,15 +208,10 @@ public class AVLTree {
 
 		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
-		int res = rebalanceInsert(x, y);
+		return rebalanceInsert(x, y);
 
-		// Find node's new position, travel up and update sizes
-		newNode = searchNode(k);
-		while (newNode.getParent() != null) {
-			newNode = newNode.getParent();
-			newNode.setSize(newNode.getSize() + 1);
-		}
-		return res;
+		
+		
 	}
 
 	/**
@@ -235,8 +230,10 @@ public class AVLTree {
 		int rebalanceCount = 0;
 
 		while (x != null) {
+			
+			x.setSize(x.getSize()+1);
 
-			// If balance is restored, stop
+			// If balance is restored, only go up and update sizes
 			if (((x.getHeight() - x.getLeft().getHeight() == 1)
 					&& (x.getHeight() - x.getRight().getHeight() == 1))
 					|| ((x.getHeight() - x.getLeft().getHeight() == 1)
@@ -244,7 +241,8 @@ public class AVLTree {
 					|| ((x.getHeight() - x.getRight().getHeight() == 1)
 							&& (x.getHeight()
 									- x.getLeft().getHeight() == 2))) {
-				return rebalanceCount;
+				x=x.getParent();
+				continue;
 			}
 
 			// Case 1 (rank differences are 0,1 and so their sum is 1)
@@ -255,6 +253,7 @@ public class AVLTree {
 				rebalanceCount += 1;
 				y = x;
 				x = x.getParent();
+				continue;
 			} else {
 				// Case 2, with both symmetric cases
 				if (((x.getLeft() == y)
@@ -267,7 +266,8 @@ public class AVLTree {
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
 
-					return rebalanceCount;
+					x=x.getParent();
+					continue;
 				}
 				// Case 3
 				IAVLNode b;
@@ -287,7 +287,8 @@ public class AVLTree {
 				b.setHeight(b.getHeight() + 1);
 				rebalanceCount += 1;
 
-				return rebalanceCount;
+				x=x.getParent();
+				continue;
 
 			}
 
@@ -894,7 +895,6 @@ public class AVLTree {
 
 		public void setSize(int size); // sets the size of subtree containing
 										// this node
-
 
 	}
 
