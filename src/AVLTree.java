@@ -262,8 +262,12 @@ public class AVLTree {
 					rebalanceCount += 1;
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
-
-					x = x.getParent().getParent();// Since x is y's child now
+					if (x.getParent() != null) {
+						x = x.getParent().getParent();// Since x is y's child
+														// now
+					} else {
+						x = null;
+					}
 					continue;
 				}
 				// Case 3
@@ -284,7 +288,12 @@ public class AVLTree {
 				b.setHeight(b.getHeight() + 1);
 				rebalanceCount += 1;
 
-				x = x.getParent().getParent();
+				if (x.getParent() != null) {
+					x = x.getParent().getParent();// Since x is y's child
+													// now
+				} else {
+					x = null;
+				}
 				continue;
 
 			}
@@ -501,7 +510,11 @@ public class AVLTree {
 					rebalanceCount += 1;
 					rotate(z, z.getRight());
 					rebalanceCount += 1;
-					z = z.getParent().getParent();
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
 					continue;
 				}
 
@@ -516,7 +529,11 @@ public class AVLTree {
 					rebalanceCount += 1;
 					rotate(z, z.getLeft());
 					rebalanceCount += 1;
-					z = z.getParent().getParent();
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
 					continue;
 				}
 
@@ -528,9 +545,11 @@ public class AVLTree {
 					rebalanceCount += 2;// Should this be 2 or 1?
 					rotate(z, z.getRight());
 					rebalanceCount += 1;
-					z = z.getParent().getParent(); // Since z's parent is now
-													// one of
-													// his previous children
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					} // Since z's parent is now one of his previous children
 					continue;
 				}
 
@@ -542,9 +561,11 @@ public class AVLTree {
 					rebalanceCount += 2;// Should this be 2 or 1?
 					rotate(z, z.getLeft());
 					rebalanceCount += 1;
-					z = z.getParent().getParent(); // Since z's parent is now
-													// one of
-													// his previous children
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
 					continue;
 				}
 
@@ -563,10 +584,11 @@ public class AVLTree {
 					rebalanceCount += 1;
 					rotate(z, z.getRight());
 					rebalanceCount += 1;
-					z = z.getParent().getParent(); // Since z's parent is now
-													// one of
-													// his previous children's
-													// children
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
 					continue;
 				}
 
@@ -585,10 +607,11 @@ public class AVLTree {
 					rebalanceCount += 1;
 					rotate(z, z.getLeft());
 					rebalanceCount += 1;
-					z = z.getParent().getParent(); // Since z's parent is now
-													// one of
-													// his previous children's
-													// children
+					if (z.getParent() != null) {
+						z = z.getParent().getParent();
+					} else {
+						z = null;
+					}
 					continue;
 				}
 
