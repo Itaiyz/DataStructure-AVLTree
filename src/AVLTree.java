@@ -200,18 +200,13 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
-		// The parent is not a leaf, no rebalancing needed
-		if (insertionPoint.getHeight() > 0) {
-			return 0;
-		}
+		
 		// Implementing rebalancing cases
 
 		IAVLNode y = newNode;
 		IAVLNode x = insertionPoint;
 		return rebalanceInsert(x, y);
 
-		
-		
 	}
 
 	/**
