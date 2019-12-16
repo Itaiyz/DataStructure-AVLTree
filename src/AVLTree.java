@@ -370,68 +370,91 @@ public class AVLTree {
 	}
 
 	/**
+	 * protected IAVLNode successor(IAVLNode node)
+	 * 
+	 * finds successor of node
+	 */
+	protected IAVLNode getSuccessor(IAVLNode node) {
+		IAVLNode successor = node.getRight();
+		IAVLNode dummy = successor.getLeft();
+		while (dummy.isRealNode()) {
+			successor = dummy;
+			dummy = dummy.getLeft();
+		}
+		return successor;
+	}
+
+	/**
 	 * protected IAVLNode deleteBinary(IAVLNode node)
 	 * 
 	 * deletes the binary node, returns a pointer to a dummy node replacing
 	 * node's successor in the tree for unary deletion
 	 */
 	protected IAVLNode deleteBinary(IAVLNode node) {
-		IAVLNode successor = node.getRight();
-		IAVLNode dummy = successor.getLeft();
 
-		while (dummy.isRealNode()) {
-			successor = dummy;
-			dummy = dummy.getLeft();
-		}
+		IAVLNode successor = getSuccessor(node);
 
-		dummy = new AVLNode();
-		dummy.setParent(successor.getParent());
-		dummy.setLeft(successor.getLeft());
-		dummy.setRight(successor.getRight());
-
-		if (root == node) {
-			root = successor;
-			successor.setParent(null);
-
+		IAVLNode temp = new AVLNode();
+		if (successor.getParent() == node) {
+			temp.setParent(successor);
 		} else {
-			successor.setParent(node.getParent());
-
-			if (node.getParent().getLeft() == node) {
-				successor.getParent().setLeft(successor);
-			} else {
-				successor.getParent().setRight(successor);
-			}
-
+			temp.setParent(successor.getParent());
 		}
+		temp.setLeft(successor.getLeft());
+		temp.setRight(successor.getRight());
+		temp.setHeight(successor.getHeight());
+		temp.setSize(successor.getSize());
 
-		if (node.getRight() != successor) {
+		successor.setParent(node.getParent());
+		successor.setLeft(node.getLeft());
+		if (node.getRight() == successor) {
+			successor.setRight(node);
+		} else {
 			successor.setRight(node.getRight());
+			if(node.getRight().isRealNode()) {
+				node.getRight().setParent(successor);
+			}
 		}
-		if (node.getLeft() != successor) {
-			successor.setLeft(node.getLeft());
-		}
-		if (successor.getRight().isRealNode()) {
-			successor.getRight().setParent(successor);
-		}
-		if (successor.getLeft().isRealNode()) {
-			successor.getLeft().setParent(successor);
-		}
+
 		successor.setHeight(node.getHeight());
 		successor.setSize(node.getSize());
 
-		if (dummy.getParent().getLeft() == successor) {
-			dummy.getParent().setLeft(dummy);
+		if (root == node) {
+			root = successor;
+
 		} else {
-			dummy.getParent().setRight(dummy);
+
+			if (node.getParent().getLeft() == node) {
+				node.getParent().setLeft(successor);
+			} else {
+				node.getParent().setRight(successor);
+			}
+
+		}
+		if(node.getLeft().isRealNode()) {
+			node.getLeft().setParent(successor);
+		}
+		
+		node.setParent(temp.getParent());
+		node.setLeft(temp.getLeft());
+		node.setRight(temp.getRight());
+		node.setHeight(temp.getHeight());
+		node.setSize(temp.getSize());
+
+		if (temp.getRight().isRealNode()) {
+			temp.getRight().setParent(node);
+		}
+		if (temp.getLeft().isRealNode()) {
+			temp.getLeft().setParent(node);
 		}
 
-		// Only need to set right child's parent since the other is
-		// definitely virtual
-		if (dummy.getRight().isRealNode()) {
-			dummy.getRight().setParent(dummy);
+		if (temp.getParent().getLeft() == successor) {
+			temp.getParent().setLeft(node);
+		} else {
+			temp.getParent().setRight(node);
 		}
 
-		return dummy;
+		return node;
 	}
 
 	/**
