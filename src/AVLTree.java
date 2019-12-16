@@ -126,7 +126,9 @@ public class AVLTree {
 			} else {
 				grandparent.setRight(child);
 			}
-			child.setParent(grandparent);
+			if (child.isRealNode()) {
+				child.setParent(grandparent);
+			}
 		}
 
 		// Perform left or right rotation appropriately
@@ -339,7 +341,7 @@ public class AVLTree {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setLeft(node.getLeft());
 					node.getLeft().setParent(node.getParent());
-				} else {
+				} else if (node.getRight().isRealNode()) {
 					node.getParent().setLeft(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
@@ -347,7 +349,7 @@ public class AVLTree {
 				if (node.getLeft().isRealNode()) {
 					node.getParent().setRight(node.getLeft());
 					node.getLeft().setParent(node.getParent());
-				} else {
+				} else if (node.getRight().isRealNode()) {
 					node.getParent().setRight(node.getRight());
 					node.getRight().setParent(node.getParent());
 				}
