@@ -149,8 +149,10 @@ class AVLTreeTest {
 
 		assertTrue(AVLSanitizer.sanitizeTree(tree));
 
-		int[] values = randomArray(100, 0, 100);
+		// int[] values = randomArray(100, 0, 100);
+		int[] values = randomArray(10, 0, 100);
 		tree = arrayToTree(values);
+		//AVLTree.print2DUtil(tree.getRoot(), 0);
 		List<Integer> valuesShuffled = Arrays.stream(values).boxed()
 				.collect(Collectors.toList());
 		Collections.shuffle(valuesShuffled);
