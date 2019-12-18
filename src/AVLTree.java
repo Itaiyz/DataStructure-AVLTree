@@ -888,8 +888,11 @@ public class AVLTree {
 		right.size = right.root.getSize();
 
 		IAVLNode p = node.getParent();
+		IAVLNode gp = p.getParent();
+
 		while (p != null) {
 			t = new AVLTree();
+			gp = p.getParent();
 			if (p.getRight() == node) {
 				t.root = p.getLeft();
 
@@ -902,7 +905,8 @@ public class AVLTree {
 				right.join(p, t);
 			}
 			node = p;
-			p = p.getParent();
+			p = gp; // We can't use p=p.getParent() because join might have
+					// changed p's parent to its parent in the new tree
 		}
 
 		return new AVLTree[] { left, right };
