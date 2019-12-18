@@ -128,8 +128,10 @@ public class AVLTree {
 			root = child;
 			child.setParent(null);
 		}
-		// Ensure parent of parent's pointers are correct
-		else {
+		// Ensure parent of parent's pointers are correct, but only do this if
+		// the parent is not null. It is not enough to check if not root, since
+		// we can get nodes with null parents during join and split
+		else if (parent.getParent() != null) {
 			IAVLNode grandparent = parent.getParent();
 			if (grandparent.getLeft() == parent) {
 				grandparent.setLeft(child);
@@ -154,7 +156,6 @@ public class AVLTree {
 			if (B.isRealNode()) {
 				B.setParent(y);
 			}
-
 
 			// Updating sizes
 			y.setSize(y.getLeft().getSize() + y.getRight().getSize() + 1);
@@ -220,7 +221,6 @@ public class AVLTree {
 			insertionPoint.setRight(newNode);
 		}
 
-
 		// Implementing rebalancing cases
 
 		IAVLNode y = newNode;
@@ -250,7 +250,6 @@ public class AVLTree {
 		int rebalanceCount = 0;
 
 		while (x != null) {
-
 
 			x.setSize(x.getSize() + 1);
 
@@ -290,7 +289,8 @@ public class AVLTree {
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
 					if (x.getParent() != null) {
-						x = x.getParent().getParent();// Since x is y's child now
+						x = x.getParent().getParent();// Since x is y's child
+														// now
 					} else {
 						x = null;
 					}
@@ -355,7 +355,7 @@ public class AVLTree {
 		}
 
 		return node.getParent();
-		
+
 	}
 
 	/**
@@ -377,7 +377,6 @@ public class AVLTree {
 				root = node.getRight();
 				node.getRight().setParent(null);
 			}
-
 
 			return EXT;
 		} else {
@@ -403,7 +402,7 @@ public class AVLTree {
 				}
 			}
 		}
-		
+
 		return node.getParent();
 
 	}
@@ -429,9 +428,8 @@ public class AVLTree {
 	/**
 	 * protected IAVLNode deleteBinary(IAVLNode node)
 	 * 
-	 * replaces binary node with successor, returns input node now
-	 * in new location in tree, to be passed to deleteLeaf or deleteUnary
-	 * as nessceary
+	 * replaces binary node with successor, returns input node now in new
+	 * location in tree, to be passed to deleteLeaf or deleteUnary as nessceary
 	 *
 	 * Complexity: O(log n)
 	 * 
@@ -451,14 +449,13 @@ public class AVLTree {
 		temp.setHeight(successor.getHeight());
 		temp.setSize(successor.getSize());
 
-
 		successor.setParent(node.getParent());
 		successor.setLeft(node.getLeft());
 		if (node.getRight() == successor) {
 			successor.setRight(node);
 		} else {
 			successor.setRight(node.getRight());
-			if(node.getRight().isRealNode()) {
+			if (node.getRight().isRealNode()) {
 				node.getRight().setParent(successor);
 			}
 		}
@@ -469,7 +466,6 @@ public class AVLTree {
 		if (root == node) {
 			root = successor;
 
-
 		} else {
 
 			if (node.getParent().getLeft() == node) {
@@ -479,10 +475,10 @@ public class AVLTree {
 			}
 
 		}
-		if(node.getLeft().isRealNode()) {
+		if (node.getLeft().isRealNode()) {
 			node.getLeft().setParent(successor);
 		}
-		
+
 		node.setParent(temp.getParent());
 		node.setLeft(temp.getLeft());
 		node.setRight(temp.getRight());
@@ -548,20 +544,19 @@ public class AVLTree {
 				// and
 				// then delete as unary node
 				z = deleteBinary(node);
-				//print2DUtil(root, 0);
+				// print2DUtil(root, 0);
 				if (z.getLeft().isRealNode() ^ z.getRight().isRealNode()) {
 					z = deleteUnary(z);
 				} else {// z is leaf
 					z = deleteLeaf(z);
 				}
-				//print2DUtil(root, 0);
+				// print2DUtil(root, 0);
 
 			}
 		}
 		if (!z.isRealNode()) {
 			return rebalanceCount;
 		}
-
 
 		if (z.getHeight() < 1) {
 			throw (new RuntimeException(
@@ -588,7 +583,6 @@ public class AVLTree {
 					continue; // Don't continue to check other cases, return to
 								// start of loop
 				}
-
 
 				// Case 2, as appearing in the presentation
 				if ((z.getHeight() - z.getLeft().getHeight() == 3)
@@ -627,7 +621,6 @@ public class AVLTree {
 					}
 					continue;
 				}
-
 
 				// Case 3, as appearing in the presentation
 				if ((z.getHeight() - z.getLeft().getHeight() == 3)
@@ -707,7 +700,6 @@ public class AVLTree {
 					continue;
 				}
 
-
 			}
 			z = z.getParent();
 		}
@@ -728,7 +720,7 @@ public class AVLTree {
 	 * Returns the info of the item with the smallest key in the tree, or null
 	 * if the tree is empty
 	 *
-	 * Complexity: O(log n) 
+	 * Complexity: O(log n)
 	 *
 	 */
 	public String min() {
@@ -872,7 +864,6 @@ public class AVLTree {
 		return root;
 	}
 
-	
 	/**
 	 * public string split(int x)
 	 *
@@ -895,7 +886,6 @@ public class AVLTree {
 		left.size = left.root.getSize();
 		right.root = node.getRight();
 		right.size = right.root.getSize();
-
 
 		IAVLNode p = node.getParent();
 		while (p != null) {
@@ -1088,100 +1078,94 @@ public class AVLTree {
 			height = -1;
 			size = 0;
 		}
+
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public int getKey() {
 			return key; // Works for both real and virtual nodes
 		}
 
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public String getValue() {
 			return value; // Works for both real and virtual nodes
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public void setLeft(IAVLNode node) {
 			left = node;
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public IAVLNode getLeft() {
 			return left;
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public void setRight(IAVLNode node) {
 			right = node;
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public IAVLNode getRight() {
 			return right;
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public void setParent(IAVLNode node) {
 			parent = node;
 		}
 
-		
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public IAVLNode getParent() {
 			return parent;
 		}
-		
+
 		/*
-		* Returns True if this is a non-virtual AVL node
-		* Complexity: O(1)
-		*/
+		 * Returns True if this is a non-virtual AVL node Complexity: O(1)
+		 */
 		public boolean isRealNode() {
 			return realNode;
 		}
 
 		/*
-		* Complexity: O(1)
-		*/		
+		 * Complexity: O(1)
+		 */
 		public void setHeight(int height) {
 			this.height = height;
 		}
 
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public int getHeight() {
 			return height;
 		}
 
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public int getSize() {
 			return size;
 		}
 
 		/*
-		* Complexity: O(1)
-		*/
+		 * Complexity: O(1)
+		 */
 		public void setSize(int size) {
 			this.size = size;
 		}
