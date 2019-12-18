@@ -924,6 +924,19 @@ public class AVLTree {
 	 */
 	public int join(IAVLNode x, AVLTree t) {
 
+		if (t.empty() && this.empty()) {
+			this.root = x;
+			return 1;
+		} else if (this.empty()) {
+			t.insert(x.getKey(), x.getValue());
+			this.root = t.root;
+			this.size = t.size;
+			return 1;
+		} else if (t.empty()) {
+			this.insert(x.getKey(), x.getValue());
+			return 1;
+		}
+
 		size = size + t.size() + 1;
 
 		if (root.getHeight() == t.getRoot().getHeight()) {
@@ -941,12 +954,21 @@ public class AVLTree {
 			root = x;
 		}
 
-		if (root.getHeight() > t.getRoot().getHeight()) {
+		else if (root.getHeight() > t.getRoot().getHeight()) {
 			IAVLNode b = root;
-			while (b.getHeight() > t.getRoot().getHeight()) {
-				b = b.getLeft();
-			}
+			boolean this_smaller;
+			if (b.getKey() < t.getRoot().getKey())
+				this_smaller = true;
+			else
+				this_smaller = false;
 			IAVLNode c = b.getParent();
+			while (b.getHeight() > t.getRoot().getHeight()) {
+				c = b;
+				if (this_smaller)
+					b = b.getRight();
+				else
+					b = b.getLeft();
+			}
 			x.setParent(c);
 			x.setHeight(t.getRoot().getHeight() + 1);
 			if (x.getKey() < c.getKey()) {
@@ -961,15 +983,30 @@ public class AVLTree {
 			t.getRoot().setParent(x);
 			b.setParent(x);
 
-			rebalanceInsert(c, x);
+			fixRanks(c, x);
+			if (x.getParent() == c) {
+				rebalanceInsert(c, x);
+			} else {
+
+				rebalanceInsert(x, c);
+			}
 		}
 
-		if (root.getHeight() < t.getRoot().getHeight()) {
+		else if (root.getHeight() < t.getRoot().getHeight()) {
 			IAVLNode b = t.getRoot();
-			while (b.getHeight() > root.getHeight()) {
-				b = b.getLeft();
-			}
+			boolean this_smaller;
+			if (b.getKey() < this.getRoot().getKey())
+				this_smaller = true;
+			else
+				this_smaller = false;
 			IAVLNode c = b.getParent();
+			while (b.getHeight() > this.getRoot().getHeight()) {
+				c = b;
+				if (this_smaller)
+					b = b.getRight();
+				else
+					b = b.getLeft();
+			}
 			x.setParent(c);
 			x.setHeight(root.getHeight() + 1);
 			if (x.getKey() < c.getKey()) {
@@ -984,10 +1021,38 @@ public class AVLTree {
 			root.setParent(x);
 			b.setParent(x);
 			root = t.getRoot();
-			rebalanceInsert(c, x);
+			fixRanks(c, x);
+			if (x.getParent() == c) {
+				rebalanceInsert(c, x);
+			} else {
+
+				rebalanceInsert(x, c);
+			}
 		}
 
 		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
+	}
+
+	/*
+	 * protected void fixRanks(IAVLNode c, IAVLNode x)
+	 * 
+	 * Treating edge case in join that doesn't behave like insert by rotating as
+	 * addressed in the forum.
+	 * 
+	 * Complexity: O(1)
+	 * 
+	 */
+	protected void fixRanks(IAVLNode c, IAVLNode x) {
+		int required = Math.max(c.getRight().getHeight(),
+				c.getLeft().getHeight()) + 1;
+		if (c.getRight().isRealNode() || c.getLeft().isRealNode())
+			if (c.getHeight() != required) {
+				rotate(c, x);
+				x.setHeight(x.getHeight() + 1);
+				x.setSize(x.getSize() - 1);
+				// Since immediatly after we call rebalanceInsert, which
+				// increases the size as its first action
+			}
 	}
 
 	/**
