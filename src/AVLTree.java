@@ -1027,6 +1027,28 @@ public class AVLTree {
 		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
 	}
 
+	/*
+	 * protected void fixRanks(IAVLNode c, IAVLNode x)
+	 * 
+	 * Treating edge case in join that doesn't behave like insert by rotating as
+	 * addressed in the forum.
+	 * 
+	 * Complexity: O(1)
+	 * 
+	 */
+	protected void fixRanks(IAVLNode c, IAVLNode x) {
+		int required = Math.max(c.getRight().getHeight(),
+				c.getLeft().getHeight()) + 1;
+		if (c.getRight().isRealNode() || c.getLeft().isRealNode())
+			if (c.getHeight() != required) {
+				rotate(c, x);
+				x.setHeight(x.getHeight() + 1);
+				x.setSize(x.getSize() - 1);
+				// Since immediatly after we call rebalanceInsert, which
+				// increases the size as its first action
+			}
+	}
+
 	/**
 	 * public interface IAVLNode ! Do not delete or modify this - otherwise all
 	 * tests will fail !
