@@ -948,12 +948,21 @@ public class AVLTree {
 			root = x;
 		}
 
-		if (root.getHeight() > t.getRoot().getHeight()) {
+		else if (root.getHeight() > t.getRoot().getHeight()) {
 			IAVLNode b = root;
-			while (b.getHeight() > t.getRoot().getHeight()) {
-				b = b.getLeft();
-			}
+			boolean this_smaller;
+			if (b.getKey() < t.getRoot().getKey())
+				this_smaller = true;
+			else
+				this_smaller = false;
 			IAVLNode c = b.getParent();
+			while (b.getHeight() > t.getRoot().getHeight()) {
+				c = b;
+				if (this_smaller)
+					b = b.getRight();
+				else
+					b = b.getLeft();
+			}
 			x.setParent(c);
 			x.setHeight(t.getRoot().getHeight() + 1);
 			if (x.getKey() < c.getKey()) {
@@ -968,15 +977,30 @@ public class AVLTree {
 			t.getRoot().setParent(x);
 			b.setParent(x);
 
-			rebalanceInsert(c, x);
+			fixRanks(c, x);
+			if (x.getParent() == c) {
+				rebalanceInsert(c, x);
+			} else {
+
+				rebalanceInsert(x, c);
+			}
 		}
 
-		if (root.getHeight() < t.getRoot().getHeight()) {
+		else if (root.getHeight() < t.getRoot().getHeight()) {
 			IAVLNode b = t.getRoot();
-			while (b.getHeight() > root.getHeight()) {
-				b = b.getLeft();
-			}
+			boolean this_smaller;
+			if (b.getKey() < this.getRoot().getKey())
+				this_smaller = true;
+			else
+				this_smaller = false;
 			IAVLNode c = b.getParent();
+			while (b.getHeight() > this.getRoot().getHeight()) {
+				c = b;
+				if (this_smaller)
+					b = b.getRight();
+				else
+					b = b.getLeft();
+			}
 			x.setParent(c);
 			x.setHeight(root.getHeight() + 1);
 			if (x.getKey() < c.getKey()) {
@@ -991,7 +1015,13 @@ public class AVLTree {
 			root.setParent(x);
 			b.setParent(x);
 			root = t.getRoot();
-			rebalanceInsert(c, x);
+			fixRanks(c, x);
+			if (x.getParent() == c) {
+				rebalanceInsert(c, x);
+			} else {
+
+				rebalanceInsert(x, c);
+			}
 		}
 
 		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
