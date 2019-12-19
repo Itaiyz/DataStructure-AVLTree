@@ -326,13 +326,21 @@ class AVLTreeTest {
 
 	public static void main(String[] args) {
 
-		testEmpty();
+		/*testEmpty();
 		testSearch();
 		testInsert();
 		testDelete();
 		testMinMax();
 		testSize();
-		testGetRoot();
+		testGetRoot();*/
+		
+		AVLTree t = new AVLTree();
+		int k;
+		String i="";
+		for(k=0;k<11;k++) {
+			t.insert(k, i);
+		}
+		BTreePrinter.printNode(t.getRoot(), "");
 
 	}
 }
