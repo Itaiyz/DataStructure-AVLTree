@@ -901,12 +901,14 @@ public class AVLTree {
 
 				t.size = t.root.getSize();
 				left.join(p, t);
+				left.size=left.getRoot().getSize();
 			} else {
 				t.root = p.getRight();
 				t.root.setParent(null);
 				t.size = t.root.getSize();
 
 				right.join(p, t);
+				right.size=right.getRoot().getSize();
 			}
 			node = p;
 			p = gp; // We can't use p=p.getParent() because join might have
@@ -951,7 +953,7 @@ public class AVLTree {
 			x.setLeft(EXT);
 			x.setRight(EXT);
 			// Implementing rebalancing cases
-
+			insertionPoint.setSize(insertionPoint.getSize()-1);
 			t.rebalanceInsert(insertionPoint, x);
 			
 			
@@ -978,7 +980,7 @@ public class AVLTree {
 			x.setLeft(EXT);
 			x.setRight(EXT);
 			// Implementing rebalancing cases
-
+			insertionPoint.setSize(insertionPoint.getSize()-1);
 			rebalanceInsert(insertionPoint, x);
 			
 			return 1;
@@ -998,6 +1000,7 @@ public class AVLTree {
 			root.setParent(x);
 			t.getRoot().setParent(x);
 			x.setHeight(root.getHeight() + 1);
+			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
 			root = x;
 		}
 
@@ -1029,7 +1032,7 @@ public class AVLTree {
 			}
 			t.getRoot().setParent(x);
 			b.setParent(x);
-
+			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
 				rebalanceInsert(c, x);
@@ -1068,6 +1071,7 @@ public class AVLTree {
 			root.setParent(x);
 			b.setParent(x);
 			root = t.getRoot();
+			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
 				rebalanceInsert(c, x);

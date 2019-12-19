@@ -338,7 +338,7 @@ class AVLTreeTest {
 			t.insert(k, i);
 		}
 		BTreePrinter.printNode(t.getRoot(), "");
-		AVLTree[] splitTrees = t.split(4);
+		AVLTree[] splitTrees = t.split(9);
 		for (AVLTree tree : splitTrees) {
 			BTreePrinter.printNode(tree.getRoot(), "");
 		}
