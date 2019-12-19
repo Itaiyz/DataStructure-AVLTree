@@ -29,9 +29,13 @@ class BTreePrinter {
 					System.out.print(node.getSize()); // changed the node print
 														// (originally value)
 				} else if (mode.equals("Rank") || mode.equals("rank")) {
-					System.out.print(node.getHeight()); // changed the node
-														// print (originally
-														// value)
+					if (node.isRealNode()) {
+						System.out.print(node.getHeight()); // changed the node
+															// print (originally
+															// value)
+					} else {
+						System.out.print("*");
+					}
 				} else {
 					if (node.isRealNode()) {
 						System.out.print(node.getKey()); // changed the node

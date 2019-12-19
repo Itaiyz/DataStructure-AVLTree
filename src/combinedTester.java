@@ -5,7 +5,7 @@ import java.util.Random;
 public class combinedTester {
 	
 	public static void main(String[] args) {		
-		joiner();
+//		joiner();
 		
 		if (false) {
 			//[80, 189, 19, 64, 248, 88, 89, 174, 222, 8, 231, 263, 40, 134, 25, 32, 273, 222, 55, 208, 278, 180, 252, 126, 73, 51, 54, 3, 121, 78, 64, 155, 32, 45, 144, 236, 155, 122, 240, 224, 108, 75, 59, 34, 107, 75, 176, 42, 52, 188, 213, 235, 238, 53, 16, 15, 157, 248, 130, 64, 94, 116, 230, 219, 168, 7, 95, 158, 153, 176, 117, 45, 233, 137, 262, 174, 197, 5, 143, 251, 273, 113, 187, 52, 57, 274, 216, 249, 117, 76, 183, 41, 81, 49, 65, 82, 4, 178, 48, 277]
@@ -20,17 +20,22 @@ public class combinedTester {
 			print(isLegal(tree1));
 		}
 		
-		splitter();
+//		splitter();
 		
 		
-		if (false) {
-			int[] arr = {125, 131, 145, 136, 131, 127, 132, 141, 137, 139};
+		if (true) {
+			int[] arr = {67, 45, 48, 25, 53, 50, 26, 69, 43, 90};
+			int splitPoint = 53;
+			//int[] arr = {145, 95, 81, 74, 32, 134, 73, 108, 274, 258, 113, 46, 141, 214, 252};
+			//int splitPoint = 81;
 			AVLTree tree = arrayToTree(arr);
-			int splitPoint = 131;
+
 			System.out.println("splitPoint = " + splitPoint);
 			AVLTree[] trees = tree.split(splitPoint);
 			AVLTree tree1 = trees[0];
 			AVLTree tree2 = trees[1];
+			BTreePrinter.printNode(tree1.getRoot(),"");
+			BTreePrinter.printNode(tree2.getRoot(),"");
 			print(isLegal(tree1) && isLegal(tree2));
 			
 		}
@@ -67,7 +72,8 @@ public class combinedTester {
 	
 	public static void splitter() {
 		for (int i = 0; i < 100; i++) {
-			int[] arr = randomArray(100, 300*i, 300*i + 280);
+			//int[] arr = randomArray(100, 300*i, 300*i + 280);
+			int[] arr = randomArray(10, i, 3*i + 30);
 			System.out.println("i = " + i);
 			AVLTree tree = arrayToTree(arr);
 			Random generator = new Random();
@@ -152,7 +158,10 @@ public class combinedTester {
 				isLegal(rightT) && isLegal(leftT));
 		
 		if(res==false) {
-			System.out.println("problem");
+			BTreePrinter.printNode(T.getRoot(), "key");
+//			BTreePrinter.printNode(T.getRoot(), "size");
+			BTreePrinter.printNode(T.getRoot(), "rank");
+			//System.out.println("problem: the node "+T.root.getKey()+" should have size "+(rightT.root.getSize() + leftT.root.getSize() + 1)+" but has size "+T.root.getSize()+" instead");
 		}
 		return res;
 	}

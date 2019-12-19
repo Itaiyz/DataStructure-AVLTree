@@ -875,6 +875,7 @@ public class AVLTree {
 	 *
 	 */
 	public AVLTree[] split(int x) {
+		BTreePrinter.printNode(this.root, "");
 		IAVLNode node = searchNode(x);
 		AVLTree left = new AVLTree();
 		AVLTree right = new AVLTree();
@@ -884,7 +885,7 @@ public class AVLTree {
 		left.root = node.getLeft();
 		left.root.setParent(null);
 		left.size = left.root.getSize();
-		
+
 		right.root = node.getRight();
 		right.root.setParent(null);
 		right.size = right.root.getSize();
@@ -901,21 +902,41 @@ public class AVLTree {
 
 				t.size = t.root.getSize();
 				left.join(p, t);
-				left.size=left.getRoot().getSize();
+				left.getRoot().setSize(left.getRoot().getLeft().getSize()
+						+ left.getRoot().getRight().getSize() + 1);
+				left.getRoot().setHeight(
+						Math.max(left.getRoot().getLeft().getHeight(),
+								left.getRoot().getRight().getHeight()) + 1);
+				left.size = left.getRoot().getSize();
 			} else {
 				t.root = p.getRight();
 				t.root.setParent(null);
 				t.size = t.root.getSize();
 
 				right.join(p, t);
-				right.size=right.getRoot().getSize();
+				right.getRoot().setSize(right.getRoot().getLeft().getSize()
+						+ right.getRoot().getRight().getSize() + 1);
+				right.getRoot().setHeight(
+						Math.max(right.getRoot().getLeft().getHeight(),
+								right.getRoot().getRight().getHeight()) + 1);
+				right.size = right.getRoot().getSize();
 			}
 			node = p;
 			p = gp; // We can't use p=p.getParent() because join might have
 					// changed p's parent to its parent in the new tree
 		}
+		AVLTree[] res = new AVLTree[] { left, right };
 
-		return new AVLTree[] { left, right };
+		for (AVLTree tree : res) {
+			if (tree.size > 0) {
+				tree.getRoot().setSize(tree.getRoot().getLeft().getSize()
+						+ tree.getRoot().getRight().getSize() + 1);
+				tree.getRoot().setHeight(
+						Math.max(tree.getRoot().getLeft().getHeight(),
+								tree.getRoot().getRight().getHeight()) + 1);
+			}
+		}
+		return res;
 	}
 
 	/**
@@ -929,12 +950,19 @@ public class AVLTree {
 	 *
 	 */
 	public int join(IAVLNode x, AVLTree t) {
-
+		if (x.getKey() == 133) {
+			System.out.println("joining around 133");
+			BTreePrinter.printNode(this.getRoot(), "rank");
+			BTreePrinter.printNode(t.getRoot(), "rank");
+		}
 		if (t.empty() && this.empty()) {
 			this.root = x;
+			x.setHeight(0);
+			x.setSize(1);
+			this.size = 1;
 			return 1;
 		} else if (this.empty()) {
-			//t.insert(x.getKey(), x.getValue());
+			// t.insert(x.getKey(), x.getValue());
 			IAVLNode insertionPoint = t.searchNode(x.getKey());
 
 			// Insert the node
@@ -942,7 +970,6 @@ public class AVLTree {
 
 			x.setHeight(0);
 			x.setSize(1);
-			
 
 			if (insertionPoint.getKey() > x.getKey()) {
 				insertionPoint.setLeft(x);
@@ -953,15 +980,15 @@ public class AVLTree {
 			x.setLeft(EXT);
 			x.setRight(EXT);
 			// Implementing rebalancing cases
-			insertionPoint.setSize(insertionPoint.getSize()-1);
+			// insertionPoint.setSize(insertionPoint.getSize()-1);
 			t.rebalanceInsert(insertionPoint, x);
-			
-			
+			t.size = t.getRoot().getSize();
+
 			this.root = t.root;
 			this.size = t.size;
 			return 1;
 		} else if (t.empty()) {
-			//this.insert(x.getKey(), x.getValue());
+			// this.insert(x.getKey(), x.getValue());
 			IAVLNode insertionPoint = this.searchNode(x.getKey());
 
 			// Insert the node
@@ -969,7 +996,6 @@ public class AVLTree {
 
 			x.setHeight(0);
 			x.setSize(1);
-			
 
 			if (insertionPoint.getKey() > x.getKey()) {
 				insertionPoint.setLeft(x);
@@ -980,9 +1006,10 @@ public class AVLTree {
 			x.setLeft(EXT);
 			x.setRight(EXT);
 			// Implementing rebalancing cases
-			insertionPoint.setSize(insertionPoint.getSize()-1);
+			// insertionPoint.setSize(insertionPoint.getSize()-1);
 			rebalanceInsert(insertionPoint, x);
-			
+			size = getRoot().getSize();
+
 			return 1;
 		}
 
@@ -1000,7 +1027,7 @@ public class AVLTree {
 			root.setParent(x);
 			t.getRoot().setParent(x);
 			x.setHeight(root.getHeight() + 1);
-			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			root = x;
 		}
 
@@ -1032,7 +1059,7 @@ public class AVLTree {
 			}
 			t.getRoot().setParent(x);
 			b.setParent(x);
-			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
 				rebalanceInsert(c, x);
@@ -1040,6 +1067,7 @@ public class AVLTree {
 
 				rebalanceInsert(x, c);
 			}
+			
 		}
 
 		else if (root.getHeight() < t.getRoot().getHeight()) {
@@ -1071,7 +1099,7 @@ public class AVLTree {
 			root.setParent(x);
 			b.setParent(x);
 			root = t.getRoot();
-			x.setSize(x.getLeft().getSize()+x.getRight().getSize()+1);
+			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
 				rebalanceInsert(c, x);
@@ -1098,9 +1126,16 @@ public class AVLTree {
 				c.getLeft().getHeight()) + 1;
 		if (c.getRight().isRealNode() || c.getLeft().isRealNode())
 			if (c.getHeight() != required) {
+				BTreePrinter.printNode(c, "");
+				BTreePrinter.printNode(c, "rank");
+				System.out.println("Fixing ranks");
 				rotate(c, x);
 				x.setHeight(x.getHeight() + 1);
 				x.setSize(x.getSize() - 1);
+				BTreePrinter.printNode(x, "");
+				BTreePrinter.printNode(x, "rank");
+				//c.setHeight(c.getHeight()+1);
+				
 				// Since immediatly after we call rebalanceInsert, which
 				// increases the size as its first action
 			}
