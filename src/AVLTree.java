@@ -882,24 +882,28 @@ public class AVLTree {
 		AVLTree t;
 
 		left.root = node.getLeft();
-
+		left.root.setParent(null);
 		left.size = left.root.getSize();
+		
 		right.root = node.getRight();
+		right.root.setParent(null);
 		right.size = right.root.getSize();
 
 		IAVLNode p = node.getParent();
-		IAVLNode gp = p.getParent();
+		IAVLNode gp = null;
 
 		while (p != null) {
 			t = new AVLTree();
 			gp = p.getParent();
 			if (p.getRight() == node) {
 				t.root = p.getLeft();
+				t.root.setParent(null);
 
 				t.size = t.root.getSize();
 				left.join(p, t);
 			} else {
 				t.root = p.getRight();
+				t.root.setParent(null);
 				t.size = t.root.getSize();
 
 				right.join(p, t);
@@ -928,12 +932,55 @@ public class AVLTree {
 			this.root = x;
 			return 1;
 		} else if (this.empty()) {
-			t.insert(x.getKey(), x.getValue());
+			//t.insert(x.getKey(), x.getValue());
+			IAVLNode insertionPoint = t.searchNode(x.getKey());
+
+			// Insert the node
+			t.size += 1;
+
+			x.setHeight(0);
+			x.setSize(1);
+			
+
+			if (insertionPoint.getKey() > x.getKey()) {
+				insertionPoint.setLeft(x);
+			} else {
+				insertionPoint.setRight(x);
+			}
+			x.setParent(insertionPoint);
+			x.setLeft(EXT);
+			x.setRight(EXT);
+			// Implementing rebalancing cases
+
+			t.rebalanceInsert(insertionPoint, x);
+			
+			
 			this.root = t.root;
 			this.size = t.size;
 			return 1;
 		} else if (t.empty()) {
-			this.insert(x.getKey(), x.getValue());
+			//this.insert(x.getKey(), x.getValue());
+			IAVLNode insertionPoint = this.searchNode(x.getKey());
+
+			// Insert the node
+			this.size += 1;
+
+			x.setHeight(0);
+			x.setSize(1);
+			
+
+			if (insertionPoint.getKey() > x.getKey()) {
+				insertionPoint.setLeft(x);
+			} else {
+				insertionPoint.setRight(x);
+			}
+			x.setParent(insertionPoint);
+			x.setLeft(EXT);
+			x.setRight(EXT);
+			// Implementing rebalancing cases
+
+			rebalanceInsert(insertionPoint, x);
+			
 			return 1;
 		}
 

@@ -8,6 +8,8 @@ public class combinedTester {
 		joiner();
 		
 		if (false) {
+			//[80, 189, 19, 64, 248, 88, 89, 174, 222, 8, 231, 263, 40, 134, 25, 32, 273, 222, 55, 208, 278, 180, 252, 126, 73, 51, 54, 3, 121, 78, 64, 155, 32, 45, 144, 236, 155, 122, 240, 224, 108, 75, 59, 34, 107, 75, 176, 42, 52, 188, 213, 235, 238, 53, 16, 15, 157, 248, 130, 64, 94, 116, 230, 219, 168, 7, 95, 158, 153, 176, 117, 45, 233, 137, 262, 174, 197, 5, 143, 251, 273, 113, 187, 52, 57, 274, 216, 249, 117, 76, 183, 41, 81, 49, 65, 82, 4, 178, 48, 277]
+			//1118, 988, 916, 1102, 1093, 909, 1130, 1138, 977, 971, 1065, 1083, 1171, 1068, 1109, 1081, 1017, 939, 1085, 932, 944, 1052, 1040, 955, 1099, 1094, 1101, 1142, 1092, 1051, 965, 1002, 1000, 926, 1175, 985, 1124, 1132, 917, 1006, 1013, 960, 914, 1089, 1173, 1146, 1067, 1066, 940, 1032, 1022, 1098, 934, 1063, 982, 973, 916, 1145, 945, 1079, 1014, 937, 1004, 1130, 1131, 940, 1122, 1106, 1157, 934, 995, 1041, 972, 1161, 1035, 1099, 1065, 1038, 986, 969, 934, 1046, 1158, 1100, 914, 997, 1068, 953, 975, 1044, 986, 1106, 1000, 1118, 1017, 985, 1033, 1028, 1093, 1067
 			int[] arr1 = {229, 228, 228, 219, 224, 220, 220, 220, 228, 212};
 			int[] arr2 = {206, 183, 207, 188, 200, 181, 186, 199, 200, 186};
 			AVLTree tree1 = arrayToTree(arr1);
@@ -93,59 +95,59 @@ public class combinedTester {
 	
 	
 	public static boolean isBST(AVLTree T) {
-		if (!(T.getRoot().isRealNode())) {
+		if (!(T.root.isRealNode())) {
 			return true;
 		}
 		AVLTree rightT = new AVLTree();
-		rightT.root=T.getRoot().getRight();
+		rightT.root=T.root.getRight();
 		rightT.size=rightT.root.getSize();
 
 		AVLTree leftT = new AVLTree();
-		leftT.root=T.getRoot().getLeft();
+		leftT.root=T.root.getLeft();
 		leftT.size=leftT.root.getSize();
 
 		boolean order = true;
-		if (rightT.getRoot().isRealNode()) {
-			order = (T.getRoot().getKey() > leftT.getRoot().getKey() &&
-					T.getRoot().getKey() < rightT.getRoot().getKey());
+		if (rightT.root.isRealNode()) {
+			order = (T.root.getKey() > leftT.root.getKey() &&
+					T.root.getKey() < rightT.root.getKey());
 		} else {
-			order = (T.getRoot().getKey() > leftT.getRoot().getKey());
+			order = (T.root.getKey() > leftT.root.getKey());
 		}
-		boolean pointers = ((!(T.getRoot().getRight().isRealNode()) ||
-				T.getRoot().getRight().getParent() == T.getRoot()) &&
-				(!(T.getRoot().getLeft().isRealNode()) ||
-				T.getRoot().getLeft().getParent() == T.getRoot()));
+		boolean pointers = ((!(T.root.getRight().isRealNode()) ||
+				T.root.getRight().getParent() == T.root) &&
+				(!(T.root.getLeft().isRealNode()) ||
+				T.root.getLeft().getParent() == T.root));
 		return (order && pointers &&
 				isBST(rightT) && isBST(leftT));
 		
 	}
 	public static boolean isLegal(AVLTree T) {
-		if (!(T.getRoot().isRealNode())) {
+		if (!(T.root.isRealNode())) {
 			return true;
 		}
 		AVLTree rightT = new AVLTree();
-		rightT.root=T.getRoot().getRight();
+		rightT.root=T.root.getRight();
 		rightT.size=rightT.root.getSize();
 
 		AVLTree leftT = new AVLTree();
-		leftT.root=T.getRoot().getLeft();
+		leftT.root=T.root.getLeft();
 		leftT.size=leftT.root.getSize();
-		boolean rootHeight = (T.getRoot().getHeight() ==
-				max(rightT.getRoot().getHeight(), leftT.getRoot().getHeight()) + 1);
-		boolean avl = Math.abs(rightT.getRoot().getHeight() - leftT.getRoot().getHeight()) <= 1;
-		boolean size = (T.getRoot().getSize() ==
-				rightT.getRoot().getSize() + leftT.getRoot().getSize() + 1);
+		boolean rootHeight = (T.root.getHeight() ==
+				max(rightT.root.getHeight(), leftT.root.getHeight()) + 1);
+		boolean avl = Math.abs(rightT.root.getHeight() - leftT.root.getHeight()) <= 1;
+		boolean size = (T.root.getSize() ==
+				rightT.root.getSize() + leftT.root.getSize() + 1);
 		boolean order = true;
-		if (rightT.getRoot().isRealNode()) {
-			order = (T.getRoot().getKey() > leftT.getRoot().getKey() &&
-					T.getRoot().getKey() < rightT.getRoot().getKey());
+		if (rightT.root.isRealNode()) {
+			order = (T.root.getKey() > leftT.root.getKey() &&
+					T.root.getKey() < rightT.root.getKey());
 		} else {
-			order = (T.getRoot().getKey() > leftT.getRoot().getKey());
+			order = (T.root.getKey() > leftT.root.getKey());
 		}
-		boolean pointers = ((!(T.getRoot().getRight().isRealNode()) ||
-				T.getRoot().getRight().getParent() == T.getRoot()) &&
-				(!(T.getRoot().getLeft().isRealNode()) ||
-				T.getRoot().getLeft().getParent() == T.getRoot()));
+		boolean pointers = ((!(T.root.getRight().isRealNode()) ||
+				T.root.getRight().getParent() == T.root) &&
+				(!(T.root.getLeft().isRealNode()) ||
+				T.root.getLeft().getParent() == T.root));
 		return (rootHeight && avl && size && order && pointers &&
 				isLegal(rightT) && isLegal(leftT));
 	}
