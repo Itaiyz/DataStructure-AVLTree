@@ -286,32 +286,41 @@ public class AVLTree {
 					continue;
 				}
 				// Case 3
-				IAVLNode b;
-				if (x.getLeft() == y) {
-					b = y.getRight();
-				} else {
-					b = y.getLeft();
-				}
-				rotate(y, b);
-				rebalanceCount += 1;
-				rotate(x, b);
-				rebalanceCount += 1;
-				x.setHeight(x.getHeight() - 1);
-				rebalanceCount += 1;
-				y.setHeight(y.getHeight() - 1);
-				rebalanceCount += 1;
-				b.setHeight(b.getHeight() + 1);
-				rebalanceCount += 1;
+				else {
+					if (((x.getLeft() == y)
+							&& (y.getHeight() - y.getLeft().getHeight() == 2))
+							|| ((x.getRight() == y) && (y.getHeight()
+									- y.getRight().getHeight() == 2))) {
+						IAVLNode b;
+						if (x.getLeft() == y) {
+							b = y.getRight();
+						} else {
+							b = y.getLeft();
+						}
+						rotate(y, b);
+						rebalanceCount += 1;
+						rotate(x, b);
+						rebalanceCount += 1;
+						x.setHeight(x.getHeight() - 1);
+						rebalanceCount += 1;
+						y.setHeight(y.getHeight() - 1);
+						rebalanceCount += 1;
+						b.setHeight(b.getHeight() + 1);
+						rebalanceCount += 1;
 
-				if (x.getParent() != null) {
-					x = x.getParent().getParent(); // Since x is y's child now
-				} else {
-					x = null;
+						if (x.getParent() != null) {
+							x = x.getParent().getParent(); // Since x is y's
+															// child now
+						} else {
+							x = null;
+						}
+						continue;
+
+					}
 				}
-				continue;
 
 			}
-
+			x = x.getParent();
 		}
 
 		return rebalanceCount;
