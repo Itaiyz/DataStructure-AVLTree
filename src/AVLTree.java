@@ -1226,7 +1226,7 @@ public class AVLTree {
 	 * Treating edge case in join that doesn't behave like insert by rotating as
 	 * addressed in the forum.
 	 * 
-	 * Complexity: O(1)
+	 * Complexity: O(log n)
 	 * 
 	 */
 	protected void fixRanks(IAVLNode c, IAVLNode x) {
