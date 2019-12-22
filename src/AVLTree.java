@@ -220,7 +220,7 @@ public class AVLTree {
 	}
 
 	/**
-	 * protected rebalanceInsert(IAVLNode x)
+	 * protected rebalanceInsert(IAVLNode x, IAVLNode y)
 	 *
 	 * Performs all rebalancing cases for insertion into AVL tree, as appearing
 	 * in WAVL presentation on slide 22
@@ -445,14 +445,6 @@ public class AVLTree {
 	 *
 	 */
 	protected IAVLNode getPredecessor(IAVLNode node) {
-		/*IAVLNode predecessor = node.getLeft();
-		IAVLNode dummy = predecessor.getRight();
-		while (dummy.isRealNode()) {
-			predecessor = dummy;
-			dummy = dummy.getRight();
-		}
-		return predecessor;*/
-
 		IAVLNode predecessor;
 		IAVLNode dummy;
 		if (node.getLeft().isRealNode()) {
