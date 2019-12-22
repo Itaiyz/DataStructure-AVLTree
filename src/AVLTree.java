@@ -278,8 +278,8 @@ public class AVLTree {
 					x.setHeight(x.getHeight() - 1);
 					rebalanceCount += 1;
 					if (x.getParent() != null) {
-						x = x.getParent().getParent();// Since x is y's child
-														// now
+						// Since x is y's child now:
+						x = x.getParent().getParent();
 					} else {
 						x = null;
 					}
@@ -309,8 +309,8 @@ public class AVLTree {
 						rebalanceCount += 1;
 
 						if (x.getParent() != null) {
-							x = x.getParent().getParent(); // Since x is y's
-															// child now
+							// Since x is y's child now:
+							x = x.getParent().getParent();
 						} else {
 							x = null;
 						}
@@ -623,8 +623,6 @@ public class AVLTree {
 			}
 		}
 
-		// If deleted last node, put virtual node as root, like when
-		// constructing new tree
 		if (empty()) {
 			root = EXT;
 		}
@@ -730,7 +728,7 @@ public class AVLTree {
 						&& (z.getLeft().getHeight()
 								- z.getLeft().getRight().getHeight() == 2)) {
 					z.setHeight(z.getHeight() - 2);
-					rebalanceCount += 2;// Should this be 2 or 1?
+					rebalanceCount += 2;
 					rotate(z, z.getLeft());
 					rebalanceCount += 1;
 					if (z.getParent() != null) {
@@ -746,7 +744,7 @@ public class AVLTree {
 						&& (z.getRight().getHeight()
 								- z.getRight().getRight().getHeight() == 2)) {
 					z.setHeight(z.getHeight() - 2);
-					rebalanceCount += 2;// Should this be 2 or 1?
+					rebalanceCount += 2;
 					z.getRight().setHeight(z.getRight().getHeight() - 1);
 					rebalanceCount += 1;
 					z.getRight().getLeft()
@@ -769,7 +767,7 @@ public class AVLTree {
 						&& (z.getLeft().getHeight()
 								- z.getLeft().getLeft().getHeight() == 2)) {
 					z.setHeight(z.getHeight() - 2);
-					rebalanceCount += 2;// Should this be 2 or 1?
+					rebalanceCount += 2;
 					z.getLeft().setHeight(z.getLeft().getHeight() - 1);
 					rebalanceCount += 1;
 					z.getLeft().getRight()
@@ -1012,7 +1010,7 @@ public class AVLTree {
 			this.size = this.root.getSize();
 			return 1;
 		} else if (this.empty()) {
-			// t.insert(x.getKey(), x.getValue());
+
 			IAVLNode insertionPoint = t.searchNode(x.getKey());
 
 			// Insert the node
@@ -1029,6 +1027,7 @@ public class AVLTree {
 			x.setParent(insertionPoint);
 			x.setLeft(EXT);
 			x.setRight(EXT);
+
 			// Implementing rebalancing cases
 			insertionPoint.setSize(insertionPoint.getSize() - 1);
 			t.rebalanceInsert(insertionPoint, x);
@@ -1038,7 +1037,7 @@ public class AVLTree {
 			this.size = t.size;
 			return 1;
 		} else if (t.empty()) {
-			// this.insert(x.getKey(), x.getValue());
+
 			IAVLNode insertionPoint = this.searchNode(x.getKey());
 
 			// Insert the node
@@ -1057,6 +1056,7 @@ public class AVLTree {
 			x.setParent(insertionPoint);
 			x.setLeft(EXT);
 			x.setRight(EXT);
+
 			// Implementing rebalancing cases
 			insertionPoint.setSize(insertionPoint.getSize() - 1);
 			IAVLNode y = insertionPoint;
@@ -1220,7 +1220,7 @@ public class AVLTree {
 		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
 	}
 
-	/*
+	/**
 	 * protected void fixRanks(IAVLNode c, IAVLNode x)
 	 * 
 	 * Treating edge case in join that doesn't behave like insert by rotating as
@@ -1236,9 +1236,9 @@ public class AVLTree {
 			if (c.getHeight() != required) {
 				rotate(c, x);
 				x.setHeight(x.getHeight() + 1);
-				x.setSize(x.getSize() - 1);
-				// Since immediatly after we call rebalanceInsert, which
-				// increases the size as its first action
+				x.setSize(x.getSize() - 1); // Since immediatly after we call
+											// rebalanceInsert, which increases
+											// the size as its first action
 				if (c.getParent() != null)
 					fixRanks(c.getParent(), c);
 			}
@@ -1252,7 +1252,7 @@ public class AVLTree {
 		public int getKey(); // returns node's key (for virtuval node return -1)
 
 		public String getValue(); // returns node's value [info] (for virtuval
-		// node return null)
+									// node return null)
 
 		public void setLeft(IAVLNode node); // sets left child
 
@@ -1343,28 +1343,28 @@ public class AVLTree {
 			size = 0;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public int getKey() {
 			return key; // Works for both real and virtual nodes
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public String getValue() {
 			return value; // Works for both real and virtual nodes
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public void setLeft(IAVLNode node) {
 			left = node;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 
@@ -1398,63 +1398,63 @@ public class AVLTree {
 			return left;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public void setRight(IAVLNode node) {
 			right = node;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public IAVLNode getRight() {
 			return right;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public void setParent(IAVLNode node) {
 			parent = node;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public IAVLNode getParent() {
 			return parent;
 		}
 
-		/*
+		/**
 		 * Returns True if this is a non-virtual AVL node Complexity: O(1)
 		 */
 		public boolean isRealNode() {
 			return realNode;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public void setHeight(int height) {
 			this.height = height;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public int getHeight() {
 			return height;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public int getSize() {
 			return size;
 		}
 
-		/*
+		/**
 		 * Complexity: O(1)
 		 */
 		public void setSize(int size) {

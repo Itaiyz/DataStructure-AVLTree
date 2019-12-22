@@ -17,9 +17,9 @@ public class combinedTester {
 			print(isLegal(tree1));
 		}
 
-//		splitter();
+		splitter();
 
-		if (true) {
+		if (false) {
 			// int[] arr = {67, 45, 48, 25, 53, 50, 26, 69, 43, 90};
 			// int splitPoint = 53;
 			// int[] arr = {145, 95, 81, 74, 32, 134, 73, 108, 274, 258, 113,
