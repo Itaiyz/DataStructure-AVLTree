@@ -17,6 +17,8 @@ public class AVLTree {
 	protected int size = 0;
 	protected IAVLNode EXT = new AVLNode(); // Shared external leaf
 	protected IAVLNode root = EXT;
+	protected IAVLNode min = EXT;
+	protected IAVLNode max = EXT;
 
 	/**
 	 * public boolean empty()
@@ -176,6 +178,8 @@ public class AVLTree {
 			newNode.setLeft(EXT);
 			newNode.setRight(EXT);
 			root = newNode;
+			min = newNode;
+			max = newNode;
 			size += 1;
 			return 0;
 		}
@@ -196,6 +200,14 @@ public class AVLTree {
 			insertionPoint.setLeft(newNode);
 		} else {
 			insertionPoint.setRight(newNode);
+		}
+
+		// Update min, max
+		if (min.getKey() > k) {
+			min = newNode;
+		}
+		if (max.getKey() < k) {
+			max = newNode;
 		}
 
 		// Implementing rebalancing cases
@@ -574,6 +586,19 @@ public class AVLTree {
 
 		size -= 1;
 
+		// Update min. max
+		if (empty()) {
+			min = EXT;
+			max = EXT;
+		} else {
+			if (min.getKey() == k) {
+				min = getSuccessor(min);
+			}
+			if (max.getKey() == k) {
+				max = getPredecessor(max);
+			}
+		}
+
 		// Remove the node appropriately, whether it is a leaf, a unary node, or
 		// a binary node, and assigns the node's parent to z
 
@@ -767,20 +792,14 @@ public class AVLTree {
 	 * Returns the info of the item with the smallest key in the tree, or null
 	 * if the tree is empty
 	 *
-	 * Complexity: O(log n)
+	 * Complexity: O(1)
 	 *
 	 */
 	public String min() {
 		if (empty()) {
 			return null;
 		}
-		IAVLNode x = root;
-		IAVLNode y = x;
-		while (x.isRealNode()) {
-			y = x;
-			x = x.getLeft();
-		}
-		return y.getValue();
+		return min.getValue();
 	}
 
 	/**
@@ -789,20 +808,14 @@ public class AVLTree {
 	 * Returns the info of the item with the largest key in the tree, or null if
 	 * the tree is empty
 	 *
-	 * Complexity: O(log n)
+	 * Complexity: O(1)
 	 *
 	 */
 	public String max() {
 		if (empty()) {
 			return null;
 		}
-		IAVLNode x = root;
-		IAVLNode y = x;
-		while (x.isRealNode()) {
-			y = x;
-			x = x.getRight();
-		}
-		return y.getValue();
+		return max.getValue();
 	}
 
 	/**
