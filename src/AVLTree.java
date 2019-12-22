@@ -1049,8 +1049,17 @@ public class AVLTree {
 			x.setLeft(EXT);
 			x.setRight(EXT);
 			// Implementing rebalancing cases
-			insertionPoint.setSize(insertionPoint.getSize() - 1);
-			rebalanceInsert(insertionPoint, x);
+			insertionPoint.setSize(insertionPoint.getSize()-1);
+			IAVLNode y=insertionPoint;
+			IAVLNode p= insertionPoint.getParent();
+			while(p!=null)
+			{
+				rebalanceInsert(p,y);
+				p.refreshHeight();
+				y.refreshHeight();
+				y=p;
+				p=y.getParent();
+			}
 			insertionPoint.refreshSize();
 			return 1;
 		}
@@ -1105,10 +1114,26 @@ public class AVLTree {
 			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
-				rebalanceInsert(c, x);
+				IAVLNode y=x;
+				IAVLNode p= c;
+				while(p!=null)
+				{
+					rebalanceInsert(p,y);
+					p.refreshHeight();
+					y.refreshHeight();
+					y=p;
+					p=y.getParent();
+				}
 			} else {
 
-				rebalanceInsert(x, c);
+				IAVLNode y=c;
+				IAVLNode p= x;
+				while(p!=null)
+				{
+					rebalanceInsert(p,y);
+					y=p;
+					p=y.getParent();
+				}
 			}
 		}
 
@@ -1144,17 +1169,50 @@ public class AVLTree {
 			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			fixRanks(c, x);
 			if (x.getParent() == c) {
-				rebalanceInsert(c, x);
+				IAVLNode y=x;
+				IAVLNode p= c;
+				while(p!=null)
+				{
+					rebalanceInsert(p,y);
+					p.refreshHeight();
+					y.refreshHeight();
+					y=p;
+					p=y.getParent();
+				}
 			} else {
 
-				rebalanceInsert(x, c);
+				IAVLNode y=c;
+		
+				IAVLNode p= x;
+				while(p!=null)
+				{
+					rebalanceInsert(p,y);
+					p.refreshHeight();
+					y.refreshHeight();
+					y=p;
+					p=y.getParent();
+				}
 			}
 		}
-		x.getLeft().refreshSize();
-		x.getRight().refreshSize();
+		if(x.getLeft()!=null)
+		{
+			x.getLeft().refreshSize();
+			x.getLeft().refreshHeight();
+	
+		}
+		if(x.getRight()!=null)
+		{
+			x.getRight().refreshSize();
+			x.getRight().refreshHeight();
+			
+		}
 		x.refreshSize();
-		if (x.getParent() != null)
+		x.refreshHeight();
+		if(x.getParent()!=null)
+		{
 			x.getParent().refreshSize();
+			x.getParent().refreshHeight();
+		}
 
 		return 1 + Math.abs(root.getHeight() - t.getRoot().getHeight());
 	}
