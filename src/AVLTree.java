@@ -1364,16 +1364,36 @@ public class AVLTree {
 		/*
 		 * Complexity: O(1)
 		 */
+		
+		public void refreshSize()
+		{
+			if(this.getRight()==null && this.getLeft()==null)
+			{
+				//node is EXT
+				this.size=0;
+				return;
+			}
+			if(this.getRight()==null)
+			{
+				this.size=this.left.getSize()+1;
+				return;
+			}
+			if(this.getLeft()==null)
+			{
+				this.size=this.right.getSize()+1;
+				return;
+			}
 
-		public void refreshSize() {
-			this.size = this.right.getSize() + this.left.getSize() + 1;
+			this.size= this.right.getSize()+this.left.getSize()+1;
 		}
-
-		public void refreshHeight() {
-			this.height = (int) Math.max(this.left.getHeight(),
-					this.right.getHeight()) + 1;
+		
+		public void refreshHeight()
+		{
+			if(this.key!=-1)
+				this.height=(int) Math.max(this.left.getHeight(), this.right.getHeight())+1;
+			else
+				this.key=-1;
 		}
-
 		public IAVLNode getLeft() {
 			return left;
 		}
