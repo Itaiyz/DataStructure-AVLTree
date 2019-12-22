@@ -393,13 +393,83 @@ public class AVLTree {
 	 *
 	 */
 	protected IAVLNode getSuccessor(IAVLNode node) {
-		IAVLNode successor = node.getRight();
-		IAVLNode dummy = successor.getLeft();
-		while (dummy.isRealNode()) {
-			successor = dummy;
-			dummy = dummy.getLeft();
+		IAVLNode successor;
+		IAVLNode dummy;
+		if (node.getRight().isRealNode()) {
+			successor = node.getRight();
+			dummy = successor.getLeft();
+			while (dummy.isRealNode()) {
+				successor = dummy;
+				dummy = dummy.getLeft();
+			}
+			return successor;
+		} else {
+			successor = node;
+			dummy = node.getParent();
+			while (dummy != null) {
+				if (dummy.getRight() == successor) {
+					successor = dummy;
+					dummy = dummy.getParent();
+				} else {
+					successor = dummy;
+					break;
+				}
+
+			}
+			if (successor != node) {
+				return successor;
+			} else {
+				return EXT;
+			}
 		}
-		return successor;
+	}
+
+	/**
+	 * protected IAVLNode getPredecessor(IAVLNode node)
+	 * 
+	 * finds predecessor of node.
+	 *
+	 * Complexity: O(log n)
+	 *
+	 */
+	protected IAVLNode getPredecessor(IAVLNode node) {
+		/*IAVLNode predecessor = node.getLeft();
+		IAVLNode dummy = predecessor.getRight();
+		while (dummy.isRealNode()) {
+			predecessor = dummy;
+			dummy = dummy.getRight();
+		}
+		return predecessor;*/
+
+		IAVLNode predecessor;
+		IAVLNode dummy;
+		if (node.getLeft().isRealNode()) {
+			predecessor = node.getLeft();
+			dummy = predecessor.getRight();
+			while (dummy.isRealNode()) {
+				predecessor = dummy;
+				dummy = dummy.getRight();
+			}
+			return predecessor;
+		} else {
+			predecessor = node;
+			dummy = node.getParent();
+			while (dummy != null) {
+				if (dummy.getLeft() == predecessor) {
+					predecessor = dummy;
+					dummy = dummy.getParent();
+				} else {
+					predecessor = dummy;
+					break;
+				}
+
+			}
+			if (predecessor != node) {
+				return predecessor;
+			} else {
+				return EXT;
+			}
+		}
 	}
 
 	/**
