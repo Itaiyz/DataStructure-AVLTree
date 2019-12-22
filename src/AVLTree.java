@@ -1170,7 +1170,9 @@ public class AVLTree {
 				x.setLeft(b);
 			}
 			root.setParent(x);
-			b.setParent(x);
+			if (b.isRealNode()) {
+				b.setParent(x);
+			}
 			root = t.getRoot();
 			x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
 			fixRanks(c, x);
