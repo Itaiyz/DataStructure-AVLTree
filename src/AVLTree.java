@@ -14,29 +14,6 @@
 
 public class AVLTree {
 
-	static void print2DUtil(IAVLNode root, int space) {
-		// Base case
-		if (root == null)
-			return;
-
-		// Increase distance between levels
-		space += 10;
-
-		// Process right child first
-		print2DUtil(root.getRight(), space);
-
-		// Print current node after space
-		// count
-		System.out.print("\n");
-		for (int i = 10; i < space; i++)
-			System.out.print(" ");
-		System.out.print(root.getKey() + " " + root.getHeight() + " "
-				+ root.getSize() + "\n");
-
-		// Process left child
-		print2DUtil(root.getLeft(), space);
-	}
-
 	protected int size = 0;
 	protected IAVLNode EXT = new AVLNode(); // Shared external leaf
 	protected IAVLNode root = EXT;
