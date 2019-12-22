@@ -485,7 +485,7 @@ public class AVLTree {
 	}
 
 	/**
-	 * protected IAVLNode deleteBinary(IAVLNode node)
+	 * protected IAVLNode replaceBinary(IAVLNode node)
 	 * 
 	 * replaces binary node with successor, returns input node now in new
 	 * location in tree, to be passed to deleteLeaf or deleteUnary as nessceary
@@ -493,7 +493,7 @@ public class AVLTree {
 	 * Complexity: O(log n)
 	 * 
 	 */
-	protected IAVLNode deleteBinary(IAVLNode node) {
+	protected IAVLNode replaceBinary(IAVLNode node) {
 
 		IAVLNode successor = getSuccessor(node);
 
@@ -573,8 +573,6 @@ public class AVLTree {
 	 */
 	public int delete(int k) {
 
-		int rebalanceCount = 0;
-
 		if (empty()) {
 			return -1;
 		}
@@ -613,26 +611,46 @@ public class AVLTree {
 				z = deleteUnary(node);
 			} else {
 				// Node is binary, we find successor, switch between them,
-				// and
-				// then delete as unary node
-				z = deleteBinary(node);
-				// print2DUtil(root, 0);
+				// and then delete as unary node
+				z = replaceBinary(node);
 				if (z.getLeft().isRealNode() ^ z.getRight().isRealNode()) {
 					z = deleteUnary(z);
-				} else {// z is leaf
+				} else { // z is leaf
 					z = deleteLeaf(z);
 				}
-				// print2DUtil(root, 0);
 
 			}
 		}
-		if (!z.isRealNode()) {
-			return rebalanceCount;
+
+		// If deleted last node, put virtual node as root, like when
+		// constructing new tree
+		if (empty()) {
+			root = EXT;
 		}
 
-		if (z.getHeight() < 1) {
-			throw (new RuntimeException(
-					"z is someone's parent, must be at least height 1"));
+		return rebalanceDelete(z);
+
+	}
+
+	/**
+	 * protected rebalanceDelete(IAVLNode z)
+	 *
+	 * Performs all rebalancing cases for deleting from AVL tree, as appearing
+	 * in WAVL presentation on slide 38
+	 * https://www.cs.tau.ac.il/~schechik/Data-Structures-2020/WAVL.pptx
+	 *
+	 * Additionaly, maintains size property of nodes.
+	 *
+	 * Used by delete function
+	 *
+	 * Complexity: O(log n)
+	 *
+	 */
+
+	protected int rebalanceDelete(IAVLNode z) {
+		int rebalanceCount = 0;
+		if (!z.isRealNode()) {
+			return rebalanceCount;
 		}
 
 		// Rebalance, starting from z, going up the tree until we stop
@@ -646,10 +664,6 @@ public class AVLTree {
 				if ((z.getHeight() - z.getLeft().getHeight() == 2)
 						&& (z.getHeight() - z.getRight().getHeight() == 2)) {
 					z.setHeight(z.getHeight() - 1);
-					if (z.getHeight() < 0) {
-						throw (new RuntimeException(
-								"internal node height cannot drop below 0"));
-					}
 					rebalanceCount += 1;
 					z = z.getParent();
 					continue; // Don't continue to check other cases, return to
@@ -776,14 +790,7 @@ public class AVLTree {
 			z = z.getParent();
 		}
 
-		// If deleted last node, put virtual node as root, like when
-		// constructing new tree
-		if (empty()) {
-			root = EXT;
-		}
-
 		return rebalanceCount;
-
 	}
 
 	/**
